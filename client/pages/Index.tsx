@@ -127,20 +127,10 @@ export default function Index() {
         console.log("⚠️ API save failed:", apiError.message || apiError);
       }
 
-      console.log(
-        "❌ No shared storage available - saving to localStorage for testing!",
-      );
-      console.log(
-        "🔄 Deploy to Netlify or fix API for proper multi-device sync",
-      );
-
-      // Temporary localStorage save for testing (single-device only)
-      try {
-        localStorage.setItem("crew-members-temp", JSON.stringify(members));
-        console.log("📱 Saved to temporary localStorage for testing");
-      } catch (error) {
-        console.log("❌ Could not save to localStorage");
-      }
+      console.log("❌ Netlify Blobs NOT AVAILABLE");
+      console.log("🚨 You are NOT deployed on Netlify!");
+      console.log("🔄 Deploy to Netlify for changes to be saved");
+      console.log("⚠️ Changes are NOT saved - Netlify Blobs required!")
     }
   };
 
