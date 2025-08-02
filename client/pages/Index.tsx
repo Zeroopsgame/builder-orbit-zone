@@ -469,9 +469,9 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Copyright Footer - Fixed at bottom, full width */}
-        <footer className="w-full bg-gray-100 border-t border-gray-200 py-4 mt-auto">
-          <div className="container mx-auto px-4 text-center">
+        {/* Copyright Footer - Sticky at bottom */}
+        <footer className="bg-gray-100 border-t border-gray-200 py-4">
+          <div className="text-center">
             <p className="text-xs text-gray-500">Copyright 2025 OT Moser</p>
           </div>
         </footer>
