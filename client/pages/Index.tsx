@@ -227,35 +227,37 @@ export default function Index() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Crew Members</span>
-              <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-                <DialogTrigger asChild>
-                  <Button className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Member
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Crew Member</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Input
-                      placeholder="Enter crew member name"
-                      value={newMemberName}
-                      onChange={(e) => setNewMemberName(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && addCrewMember()}
-                    />
-                    <Button onClick={addCrewMember} className="w-full">
+              <span>{userRole === 'lead' ? 'Crew Members' : 'Your Status'}</span>
+              {userRole === 'lead' && (
+                <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2">
+                      <Plus className="h-4 w-4" />
                       Add Member
                     </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Crew Member</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Input
+                        placeholder="Enter crew member name"
+                        value={newMemberName}
+                        onChange={(e) => setNewMemberName(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && addCrewMember()}
+                      />
+                      <Button onClick={addCrewMember} className="w-full">
+                        Add Member
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {crewMembers.map((member) => (
+            {crewMembers.filter(member => userRole === 'lead' || member.name === currentUser).map((member) => (
               <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="space-y-1">
@@ -287,14 +289,16 @@ export default function Index() {
                     />
                     <span className="text-sm text-muted-foreground">In</span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeMember(member.id)}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {userRole === 'lead' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeMember(member.id)}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}
