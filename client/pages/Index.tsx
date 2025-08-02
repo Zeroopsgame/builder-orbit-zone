@@ -41,7 +41,30 @@ export default function Index() {
   const [noteDialogMember, setNoteDialogMember] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
 
-  const addCrewMember = () => {
+  // Load crew members from API
+  useEffect(() => {
+    fetchCrewMembers();
+  }, []);
+
+  const fetchCrewMembers = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/crew.php`);
+      if (response.ok) {
+        const data = await response.json();
+        const formattedData = data.map((member: any) => ({
+          ...member,
+          timestamp: new Date(member.timestamp)
+        }));
+        setCrewMembers(formattedData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch crew members:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addCrewMember = async () => {
     if (newMemberName.trim()) {
       const newMember: CrewMember = {
         id: Date.now().toString(),
