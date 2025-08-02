@@ -139,9 +139,13 @@ export default function Index() {
 
       if (response.ok) {
         setCrewMembers((members) => members.filter((member) => member.id !== id));
+      } else {
+        throw new Error('API not available');
       }
     } catch (error) {
-      console.error('Failed to remove crew member:', error);
+      console.error('API not available, using local state:', error);
+      // Fallback to local state
+      setCrewMembers((members) => members.filter((member) => member.id !== id));
     }
   };
 
