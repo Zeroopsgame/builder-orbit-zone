@@ -652,7 +652,34 @@ export default function Index() {
                 >
                   <div className="flex items-center space-x-4">
                     <div className="space-y-1">
-                      <p className="font-medium">OT {member.name}</p>
+                      {userRole === "lead" && editingMemberId === member.id ? (
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium">OT</span>
+                          <Input
+                            value={editNameInput}
+                            onChange={(e) => setEditNameInput(e.target.value)}
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                updateMemberName(member.id, editNameInput);
+                              } else if (e.key === "Escape") {
+                                setEditingMemberId(null);
+                                setEditNameInput("");
+                              }
+                            }}
+                            onBlur={() => updateMemberName(member.id, editNameInput)}
+                            className="font-medium h-6 w-32"
+                            autoFocus
+                          />
+                        </div>
+                      ) : (
+                        <p
+                          className={`font-medium ${userRole === "lead" ? "cursor-pointer hover:text-primary" : ""}`}
+                          onClick={() => userRole === "lead" && startEditingName(member)}
+                          title={userRole === "lead" ? "Click to edit name" : ""}
+                        >
+                          OT {member.name}
+                        </p>
+                      )}
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         <span>{formatTime(member.timestamp)}</span>
