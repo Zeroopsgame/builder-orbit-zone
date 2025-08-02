@@ -471,11 +471,11 @@ export default function Index() {
 
         {/* Copyright Footer - Fixed at bottom, full width */}
         <footer className="w-full bg-gray-100 border-t border-gray-200 py-4 mt-auto">
-          <div className="text-center">
+          <div className="container mx-auto px-4 text-center">
             <p className="text-xs text-gray-500">Copyright 2025 OT Moser</p>
           </div>
         </footer>
-        </div>
+      </div>
 
         {/* Password Dialog - Available on login screen */}
         <Dialog
