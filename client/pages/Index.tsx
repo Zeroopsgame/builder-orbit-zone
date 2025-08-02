@@ -632,9 +632,9 @@ export default function Index() {
           </Card>
         </div>
 
-        {/* Add New Member */}
-        <Card>
-          <CardHeader>
+        {/* Crew Management */}
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100">
             <CardTitle className="flex items-center justify-between">
               <span>
                 {userRole === "lead" ? "Crew Members" : "Your Status"}
