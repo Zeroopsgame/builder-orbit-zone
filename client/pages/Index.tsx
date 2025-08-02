@@ -75,7 +75,7 @@ export default function Index() {
     fetchCrewMembers();
   }, []);
 
-  // Helper function to save crew data with multi-device sync
+  // Helper function to save crew data with multi-device sync ONLY
   const saveCrewMembers = async (members: CrewMember[]) => {
     try {
       const store = getCrewStore();
@@ -127,13 +127,8 @@ export default function Index() {
         console.log("⚠️ API save failed:", apiError.message || apiError);
       }
 
-      // Final fallback to localStorage (device-specific)
-      try {
-        localStorage.setItem("crew-members-fallback", JSON.stringify(members));
-        console.log("💾 Saved to localStorage (device-only) as final fallback");
-      } catch (localError) {
-        console.error("❌ Could not save anywhere:", localError);
-      }
+      console.log("❌ No shared storage available - changes will not be saved!");
+      console.log("🔄 Deploy to Netlify or fix API for proper multi-device sync");
     }
   };
 
