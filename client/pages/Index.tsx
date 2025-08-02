@@ -335,27 +335,34 @@ export default function Index() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center space-y-2">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="text-2xl font-bold text-green-600">
+              <div className="bg-gradient-to-r from-blue-500/10 via-blue-600/10 to-blue-700/10 rounded-xl p-6 border border-blue-200/50 shadow-lg">
+                <div className="grid grid-cols-3 gap-6 text-center">
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <div className="w-6 h-6 bg-green-500 rounded-full"></div>
+                    </div>
+                    <p className="text-3xl font-bold text-green-600">
                       {crewMembers.filter((m) => m.isIn).length}
                     </p>
-                    <p className="text-sm font-medium text-green-700">In</p>
+                    <p className="text-sm font-semibold text-green-700">IN</p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-red-600">
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <div className="w-6 h-6 bg-red-500 rounded-full"></div>
+                    </div>
+                    <p className="text-3xl font-bold text-red-600">
                       {crewMembers.filter((m) => !m.isIn).length}
                     </p>
-                    <p className="text-sm font-medium text-red-700">Out</p>
+                    <p className="text-sm font-semibold text-red-700">OUT</p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-blue-600">
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
+                    </div>
+                    <p className="text-3xl font-bold text-blue-600">
                       {crewMembers.length}
                     </p>
-                    <p className="text-sm font-medium text-blue-700">
-                      Total Crew
-                    </p>
+                    <p className="text-sm font-semibold text-blue-700">TOTAL</p>
                   </div>
                 </div>
               </div>
