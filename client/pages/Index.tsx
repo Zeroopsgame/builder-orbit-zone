@@ -451,7 +451,7 @@ export default function Index() {
             <Badge variant="outline">
               {userRole === "lead"
                 ? "Flight Lead"
-                : `Logged in as: ${currentUser}`}
+                : `Logged in as: OT ${currentUser}`}
             </Badge>
             <Button
               variant="ghost"
