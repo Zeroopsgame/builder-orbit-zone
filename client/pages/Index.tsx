@@ -380,7 +380,7 @@ export default function Index() {
           <div className="absolute inset-0 bg-black opacity-40"></div>
           <div className="relative z-10 flex flex-col justify-center items-center text-white px-4">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F0134353dac464c528b24021909635b3c?format=webp&width=800"
+              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
               alt="Air Force Logo"
               className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6"
             />
