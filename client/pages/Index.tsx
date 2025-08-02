@@ -52,6 +52,35 @@ export default function Index() {
   }, []);
 
   const fetchCrewMembers = async () => {
+    // In development mode, use sample data directly
+    if (isDevelopment) {
+      console.log('Development mode detected - using sample data');
+      setCrewMembers([
+        {
+          id: "1",
+          name: "John Smith",
+          status: "in",
+          timestamp: new Date(Date.now() - 30 * 60 * 1000),
+        },
+        {
+          id: "2",
+          name: "Sarah Johnson",
+          status: "out",
+          note: "Lunch",
+          timestamp: new Date(Date.now() - 15 * 60 * 1000),
+        },
+        {
+          id: "3",
+          name: "Mike Davis",
+          status: "in",
+          timestamp: new Date(Date.now() - 45 * 60 * 1000),
+        },
+      ]);
+      setLoading(false);
+      return;
+    }
+
+    // In production mode, try to fetch from API
     try {
       const response = await fetch(`${API_BASE_URL}/crew.php`);
       if (response.ok) {
@@ -66,7 +95,7 @@ export default function Index() {
       }
     } catch (error) {
       console.error('Failed to fetch crew members, using fallback data:', error);
-      // Use fallback data for development/when API is not available
+      // Use fallback data when API is not available
       setCrewMembers([
         {
           id: "1",
