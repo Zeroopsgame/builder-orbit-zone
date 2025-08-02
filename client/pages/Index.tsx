@@ -336,6 +336,60 @@ export default function Index() {
     }
   };
 
+  const updateMemberName = async (id: string, newName: string) => {
+    if (!newName.trim()) return;
+
+    // In development mode, use local state directly
+    if (isDevelopment) {
+      setCrewMembers((members) =>
+        members.map((member) =>
+          member.id === id ? { ...member, name: newName.trim() } : member
+        )
+      );
+      setEditingMemberId(null);
+      setEditNameInput("");
+      return;
+    }
+
+    // In production mode, would use API call
+    try {
+      const response = await fetch(`${API_BASE_URL}/crew.php`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, name: newName.trim() }),
+      });
+
+      if (response.ok) {
+        setCrewMembers((members) =>
+          members.map((member) =>
+            member.id === id ? { ...member, name: newName.trim() } : member
+          )
+        );
+        setEditingMemberId(null);
+        setEditNameInput("");
+      } else {
+        throw new Error('API not available');
+      }
+    } catch (error) {
+      console.error('API not available, using local state:', error);
+      // Fallback to local state
+      setCrewMembers((members) =>
+        members.map((member) =>
+          member.id === id ? { ...member, name: newName.trim() } : member
+        )
+      );
+      setEditingMemberId(null);
+      setEditNameInput("");
+    }
+  };
+
+  const startEditingName = (member: CrewMember) => {
+    setEditingMemberId(member.id);
+    setEditNameInput(member.name);
+  };
+
   const getStatusBadge = (status: "in" | "out") => {
     return status === "in" ? (
       <Badge className="bg-success text-success-foreground">IN</Badge>
