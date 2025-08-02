@@ -60,11 +60,15 @@ export default async (req: Request, context: Context) => {
     }
     
     if (req.method === 'POST') {
+      console.log('📝 Handling POST request');
       // Save crew data
       const body = await req.text();
+      console.log('📝 Request body:', body);
       const { crewMembers } = JSON.parse(body);
+      console.log('📝 Parsed crew members:', crewMembers);
       await store.set('crew-members', JSON.stringify(crewMembers));
-      
+      console.log('✅ Successfully saved to Netlify Blobs');
+
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers,
