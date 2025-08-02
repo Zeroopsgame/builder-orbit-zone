@@ -31,7 +31,7 @@ export default function Index() {
   const fetchCrewMembers = async (): Promise<CrewMember[]> => {
     try {
       console.log("🔄 Fetching crew data from Netlify Function...");
-      const response = await fetch('/.netlify/functions/crew-data', {
+      const response = await fetch('/.netlify/functions/crew-data-simple', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export default function Index() {
   const saveCrewMembers = async (members: CrewMember[]): Promise<boolean> => {
     try {
       console.log("💾 Saving crew data to Netlify Function...", members);
-      const response = await fetch('/.netlify/functions/crew-data', {
+      const response = await fetch('/.netlify/functions/crew-data-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
