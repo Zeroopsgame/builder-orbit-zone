@@ -65,6 +65,12 @@ export default function Index() {
   };
 
   const toggleStatus = (id: string, checked: boolean) => {
+    // Only allow toggle if user is flight lead or it's their own status
+    const member = crewMembers.find(m => m.id === id);
+    if (userRole !== 'lead' && member?.name !== currentUser) {
+      return; // Not authorized
+    }
+
     const newStatus = checked ? 'in' : 'out';
 
     if (newStatus === 'out') {
