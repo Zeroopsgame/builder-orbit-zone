@@ -46,12 +46,34 @@ export default function Index() {
     window.location.hostname.includes("fly.dev") ||
     window.location.hostname.includes("builder.codes");
 
-  // Initialize Netlify Blobs storage for multi-user persistence
+  // Initialize Netlify Blobs storage - using correct parameters per documentation
   const getCrewStore = () => {
     try {
-      return getStore("crew-status");
+      // Check if we're in Netlify serverless environment (auto-config)
+      if (typeof window !== 'undefined' && window.location.hostname.includes('netlify.app')) {
+        console.log("🔄 Using Netlify Blobs with auto-config (serverless environment)");
+        return getStore("crew-status");
+      }
+
+      // For client-side usage, we need siteID and token (when available)
+      const siteID = process.env.REACT_APP_NETLIFY_SITE_ID || process.env.NETLIFY_SITE_ID;
+      const token = process.env.REACT_APP_NETLIFY_AUTH_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
+
+      if (siteID && token) {
+        console.log("🔄 Using Netlify Blobs with manual config (client-side)");
+        return getStore({
+          name: "crew-status",
+          siteID: siteID,
+          token: token,
+        });
+      } else {
+        console.log("❌ Netlify Blobs: Missing siteID or token for client-side usage");
+        console.log("🔧 Set REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN environment variables");
+        return null;
+      }
     } catch (error) {
-      console.log("Netlify Blobs not available, using local storage fallback");
+      console.log("❌ Netlify Blobs initialization failed:", error);
+      console.log("🚨 Ensure you're deployed on Netlify or have proper environment variables");
       return null;
     }
   };
