@@ -552,7 +552,7 @@ export default function Index() {
                 >
                   <div className="flex items-center space-x-4">
                     <div className="space-y-1">
-                      <p className="font-medium">{member.name}</p>
+                      <p className="font-medium">OT {member.name}</p>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         <span>{formatTime(member.timestamp)}</span>
