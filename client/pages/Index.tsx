@@ -58,6 +58,10 @@ export default function Index() {
     }
   };
 
+  const removeMember = (id: string) => {
+    setCrewMembers(members => members.filter(member => member.id !== id));
+  };
+
   const toggleStatus = (id: string, newStatus: 'in' | 'out') => {
     if (newStatus === 'out') {
       setNoteDialogMember(id);
