@@ -426,7 +426,7 @@ export default function Index() {
                   <Button
                     key={member.id}
                     variant="outline"
-                    className="w-full justify-between px-4 py-3"
+                    className="w-full justify-between px-4 py-3 border-blue-200 hover:bg-blue-50"
                     onClick={() => {
                       setCurrentUser(member.name);
                       setUserRole("crew");
