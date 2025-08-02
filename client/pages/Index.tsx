@@ -213,7 +213,25 @@ export default function Index() {
       }
     }
 
-    // NO localStorage fallback - use sample data if no shared storage available
+    // Temporary localStorage fallback for testing (single-device only)
+    try {
+      const fallbackData = localStorage.getItem("crew-members-temp");
+      if (fallbackData) {
+        const parsedData = JSON.parse(fallbackData);
+        const formattedData = parsedData.map((member: any) => ({
+          ...member,
+          timestamp: new Date(member.timestamp),
+        }));
+        setCrewMembers(formattedData);
+        console.log("📱 Using temporary localStorage for testing (single-device only)");
+        setLoading(false);
+        return;
+      }
+    } catch (error) {
+      console.log("❌ localStorage test failed");
+    }
+
+    // Use sample data if nothing else works
     console.log("⚠️ No shared storage available - using sample data");
     console.log("🔄 Deploy to Netlify or fix API for proper multi-device sync");
 
