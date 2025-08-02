@@ -325,10 +325,10 @@ export default function Index() {
               />
               <div>
                 <h1 className="text-2xl font-bold text-blue-700">
-                  WELCOME BACK US AIR FORCE
+                  OTS FLIGHT 15
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">
-                  STATUS LIVE TRACKER
+                  STATUS TRACKER
                 </p>
               </div>
             </div>
@@ -439,9 +439,9 @@ export default function Index() {
             />
             <div>
               <h1 className="text-2xl font-bold text-blue-700">
-                WELCOME BACK US AIR FORCE
+                OTS FLIGHT 15
               </h1>
-              <p className="text-sm text-gray-600 mt-1">STATUS LIVE TRACKER</p>
+              <p className="text-sm text-gray-600 mt-1">STATUS TRACKER</p>
             </div>
           </div>
         </div>
