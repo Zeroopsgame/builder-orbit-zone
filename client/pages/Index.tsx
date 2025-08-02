@@ -701,9 +701,9 @@ export default function Index() {
                           />
                         </div>
                       ) : (
-                        <div className="flex items-center space-x-3">
+                        <div className="space-y-1">
                           <p
-                            className={`font-medium ${userRole === "lead" ? "cursor-pointer hover:text-primary" : ""}`}
+                            className={`font-medium text-lg ${userRole === "lead" ? "cursor-pointer hover:text-primary transition-colors" : ""}`}
                             onClick={() =>
                               userRole === "lead" && startEditingName(member)
                             }
@@ -713,17 +713,17 @@ export default function Index() {
                           >
                             OT {member.name}
                           </p>
-                          <div
-                            className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          <p
+                            className={`text-sm font-medium ${
                               member.status === "out"
-                                ? "text-red-600 bg-red-50"
-                                : "text-green-600 bg-green-50"
+                                ? "text-red-600"
+                                : "text-green-600"
                             }`}
                           >
                             {member.status === "out"
-                              ? `out since ${getTimeSince(member.timestamp)} ${member.note ? `• ${member.note}` : ""}`
+                              ? `out at ${formatTime(member.timestamp)} ${member.note ? `at ${member.note}` : ""}`
                               : "present"}
-                          </div>
+                          </p>
                         </div>
                       )}
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
