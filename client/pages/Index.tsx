@@ -475,7 +475,7 @@ export default function Index() {
           </div>
 
         {/* Bottom Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full"></div>
+        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
       </div>
       </div>
 
