@@ -635,7 +635,13 @@ export default function Index() {
         </Dialog>
 
         {/* Password Dialog */}
-        <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <Dialog
+          open={showPasswordDialog}
+          onOpenChange={(open) => {
+            console.log("Password dialog state changing to:", open);
+            setShowPasswordDialog(open);
+          }}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Flight Lead Authentication</DialogTitle>
