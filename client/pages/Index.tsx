@@ -374,8 +374,8 @@ export default function Index() {
       return "from-red-300 to-red-500";
     };
     return (
-      <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 p-4 md:p-6 flex items-center justify-center">
+        <Card className="w-full max-w-md border-blue-200 shadow-xl">
           <CardHeader>
             <div className="flex flex-col items-center space-y-3">
               <div className="text-center">
