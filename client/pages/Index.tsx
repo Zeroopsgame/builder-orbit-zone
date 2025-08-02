@@ -56,9 +56,33 @@ export default function Index() {
           timestamp: new Date(member.timestamp)
         }));
         setCrewMembers(formattedData);
+      } else {
+        throw new Error('API not available');
       }
     } catch (error) {
-      console.error('Failed to fetch crew members:', error);
+      console.error('Failed to fetch crew members, using fallback data:', error);
+      // Use fallback data for development/when API is not available
+      setCrewMembers([
+        {
+          id: "1",
+          name: "John Smith",
+          status: "in",
+          timestamp: new Date(Date.now() - 30 * 60 * 1000),
+        },
+        {
+          id: "2",
+          name: "Sarah Johnson",
+          status: "out",
+          note: "Lunch",
+          timestamp: new Date(Date.now() - 15 * 60 * 1000),
+        },
+        {
+          id: "3",
+          name: "Mike Davis",
+          status: "in",
+          timestamp: new Date(Date.now() - 45 * 60 * 1000),
+        },
+      ]);
     } finally {
       setLoading(false);
     }
