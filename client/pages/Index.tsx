@@ -324,6 +324,25 @@ export default function Index() {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  const getTimeSince = (date: Date) => {
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+
+    if (diffInMinutes < 1) return "just now";
+    if (diffInMinutes < 60) return `${diffInMinutes}m`;
+
+    const hours = Math.floor(diffInMinutes / 60);
+    const minutes = diffInMinutes % 60;
+
+    if (hours < 24) {
+      return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+    }
+
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+    return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
+  };
+
   const handleFlightLeadLogin = () => {
     if (passwordInput === "15") {
       setUserRole("lead");
