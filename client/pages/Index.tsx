@@ -654,6 +654,9 @@ export default function Index() {
                   className="flex items-center justify-between p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow bg-white"
                 >
                   <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                      <User className="w-5 h-5 text-gray-500" />
+                    </div>
                     <div className="space-y-1">
                       {userRole === "lead" && editingMemberId === member.id ? (
                         <div className="flex items-center space-x-2">
