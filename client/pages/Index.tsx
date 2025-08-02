@@ -124,7 +124,14 @@ export default function Index() {
       <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center">Access Crew Status</CardTitle>
+            <div className="flex flex-col items-center space-y-3">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F3ddd57bd6dc845d9b67a66c8baf54949?format=webp&width=800"
+                alt="U.S. Air Force"
+                className="h-16 w-auto"
+              />
+              <CardTitle className="text-center">Access Crew Status</CardTitle>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
