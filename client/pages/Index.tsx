@@ -393,7 +393,7 @@ export default function Index() {
     return (
       <div className="h-screen bg-white flex flex-col">
         {/* Top Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full"></div>
+        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
 
         {/* Middle Section - Login Form */}
         <div className="flex-1 flex items-center justify-center px-4 py-8">
