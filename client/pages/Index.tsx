@@ -472,8 +472,11 @@ export default function Index() {
                   </Button>
                 ))}
               </div>
-            </div>
           </div>
+
+        {/* Bottom Blue Banner */}
+        <div className="bg-blue-900 h-3"></div>
+      </div>
       </div>
 
         {/* Password Dialog - Available on login screen */}
