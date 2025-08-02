@@ -691,13 +691,25 @@ export default function Index() {
                           />
                         </div>
                       ) : (
-                        <p
-                          className={`font-medium ${userRole === "lead" ? "cursor-pointer hover:text-primary" : ""}`}
-                          onClick={() => userRole === "lead" && startEditingName(member)}
-                          title={userRole === "lead" ? "Click to edit name" : ""}
-                        >
-                          OT {member.name}
-                        </p>
+                        <div className="flex items-center space-x-3">
+                          <p
+                            className={`font-medium ${userRole === "lead" ? "cursor-pointer hover:text-primary" : ""}`}
+                            onClick={() => userRole === "lead" && startEditingName(member)}
+                            title={userRole === "lead" ? "Click to edit name" : ""}
+                          >
+                            OT {member.name}
+                          </p>
+                          <div className={`text-xs font-medium px-2 py-1 rounded-full ${
+                            member.status === 'out'
+                              ? 'text-red-600 bg-red-50'
+                              : 'text-green-600 bg-green-50'
+                          }`}>
+                            {member.status === 'out'
+                              ? `out since ${getTimeSince(member.timestamp)} ${member.note ? `• ${member.note}` : ''}`
+                              : 'present'
+                            }
+                          </div>
+                        </div>
                       )}
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Clock className="h-3 w-3" />
