@@ -464,8 +464,13 @@ export default function Index() {
                   </Button>
                 ))}
               </div>
-            </div>
           </div>
+        </div>
+
+        {/* Copyright Footer */}
+        <div className="bg-gray-50 py-4 px-4 text-center">
+          <p className="text-xs text-gray-500">Copyright 2025 OT Moser</p>
+        </div>
         </div>
 
         {/* Password Dialog - Available on login screen */}
