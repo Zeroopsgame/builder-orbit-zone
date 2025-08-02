@@ -81,10 +81,20 @@ export default function Index() {
       const store = getCrewStore();
       if (store) {
         await store.setJSON("crew-members", members);
-        console.log("Crew data saved to Netlify Blobs");
+        console.log("✅ Crew data saved to Netlify Blobs successfully");
+      } else {
+        console.warn("⚠️ Netlify Blobs not available - saving to localStorage as fallback");
+        localStorage.setItem("crew-members-fallback", JSON.stringify(members));
       }
     } catch (error) {
-      console.log("Could not save to Netlify Blobs:", error);
+      console.error("❌ Could not save to Netlify Blobs:", error);
+      // Fallback to localStorage
+      try {
+        localStorage.setItem("crew-members-fallback", JSON.stringify(members));
+        console.log("💾 Saved to localStorage as fallback");
+      } catch (localError) {
+        console.error("❌ Could not save to localStorage either:", localError);
+      }
     }
   };
 
