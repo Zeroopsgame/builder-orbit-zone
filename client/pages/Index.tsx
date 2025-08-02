@@ -376,7 +376,7 @@ export default function Index() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 p-4 md:p-6 flex items-center justify-center">
         <Card className="w-full max-w-md border-blue-200 shadow-xl">
-          <CardHeader>
+          <CardHeader className="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-t-lg">
             <div className="flex flex-col items-center space-y-3">
               <div className="text-center">
                 <h1 className="text-2xl font-bold text-blue-900 mb-1">U.S. AIR FORCE</h1>
