@@ -105,9 +105,21 @@ export default function Index() {
           setCrewMembers([...crewMembers, newMember]);
           setNewMemberName("");
           setShowAddDialog(false);
+        } else {
+          throw new Error('API not available');
         }
       } catch (error) {
-        console.error('Failed to add crew member:', error);
+        console.error('API not available, using local state:', error);
+        // Fallback to local state when API is not available
+        const newMember: CrewMember = {
+          id: Date.now().toString(),
+          name: newMemberName.trim(),
+          status: "in",
+          timestamp: new Date(),
+        };
+        setCrewMembers([...crewMembers, newMember]);
+        setNewMemberName("");
+        setShowAddDialog(false);
       }
     }
   };
