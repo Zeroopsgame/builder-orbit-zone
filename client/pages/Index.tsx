@@ -513,24 +513,20 @@ export default function Index() {
                   <Button
                     key={member.id}
                     variant="outline"
-                    className="w-full justify-start h-auto py-3"
+                    className="w-full justify-between px-4 py-3"
                     onClick={() => {
                       setCurrentUser(member.name);
                       setUserRole("crew");
                     }}
                   >
-                    <div className="text-left w-full">
-                      <div className="font-medium">OT {member.name}</div>
-                      <div className={`text-xs mt-1 ${
-                        member.status === "out"
-                          ? "text-red-600"
-                          : "text-green-600"
-                      }`}>
-                        {member.status === "out"
-                          ? `out at ${formatTime(member.timestamp)} ${member.note ? `at ${member.note}` : ""}`
-                          : "present"}
-                      </div>
-                    </div>
+                    <span className="font-medium">OT {member.name}</span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      member.status === "out"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-green-100 text-green-700"
+                    }`}>
+                      {member.status === "out" ? "OUT" : "IN"}
+                    </span>
                   </Button>
                 ))}
               </div>
