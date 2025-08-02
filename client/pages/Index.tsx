@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Plus, Users, Clock, MapPin, Trash2, ArrowLeft, User } from "lucide-react";
+import {
+  Plus,
+  Users,
+  Clock,
+  MapPin,
+  Trash2,
+  ArrowLeft,
+  User,
+} from "lucide-react";
 import { getStore } from "@netlify/blobs";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -350,7 +358,9 @@ export default function Index() {
               alt="Air Force Logo"
               className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6"
             />
-            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">WELCOME BACK</h1>
+            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">
+              WELCOME BACK
+            </h1>
             <p className="text-lg md:text-xl text-slate-300">U.S. AIR FORCE</p>
           </div>
         </div>
@@ -400,9 +410,15 @@ export default function Index() {
           <div className="w-full max-w-md space-y-6 md:space-y-8">
             {/* Header */}
             <div className="text-center">
-              <h2 className="text-2xl md:text-3xl font-medium text-gray-600 mb-2">OTS FLIGHT 15</h2>
-              <h3 className="text-lg md:text-xl font-medium text-gray-500 mb-6 md:mb-8">STATUS LIVE TRACKER</h3>
-              <p className="text-sm text-gray-500 mb-6 md:mb-8">Select your access level to begin</p>
+              <h2 className="text-2xl md:text-3xl font-medium text-gray-600 mb-2">
+                OTS FLIGHT 15
+              </h2>
+              <h3 className="text-lg md:text-xl font-medium text-gray-500 mb-6 md:mb-8">
+                STATUS LIVE TRACKER
+              </h3>
+              <p className="text-sm text-gray-500 mb-6 md:mb-8">
+                Select your access level to begin
+              </p>
             </div>
 
             {/* Status Overview */}
@@ -439,7 +455,9 @@ export default function Index() {
 
             {/* Crew Member Selection */}
             <div className="space-y-4">
-              <p className="text-sm font-medium text-gray-600 text-center">Or select your name:</p>
+              <p className="text-sm font-medium text-gray-600 text-center">
+                Or select your name:
+              </p>
               <div className="space-y-2">
                 {crewMembers.map((member) => (
                   <Button
@@ -455,7 +473,9 @@ export default function Index() {
                       <div className="w-8 h-8 border border-gray-200 rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-gray-500" />
                       </div>
-                      <span className="font-medium text-gray-700">OT {member.name}</span>
+                      <span className="font-medium text-gray-700">
+                        OT {member.name}
+                      </span>
                     </div>
                     <div className="text-right text-xs">
                       {member.status === "out" ? (
@@ -472,12 +492,12 @@ export default function Index() {
                   </Button>
                 ))}
               </div>
-          </div>
+            </div>
 
-        {/* Bottom Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-      </div>
-      </div>
+            {/* Bottom Blue Banner */}
+            <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
+          </div>
+        </div>
 
         {/* Password Dialog - Available on login screen */}
         <Dialog
@@ -551,8 +571,12 @@ export default function Index() {
               className="w-12 h-12 mb-2"
             />
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-800 mb-1">U.S. AIR FORCE</h1>
-              <h2 className="text-lg font-semibold text-gray-700">OTS FLIGHT 15</h2>
+              <h1 className="text-2xl font-bold text-gray-800 mb-1">
+                U.S. AIR FORCE
+              </h1>
+              <h2 className="text-lg font-semibold text-gray-700">
+                OTS FLIGHT 15
+              </h2>
               <p className="text-sm text-gray-600 mt-1">STATUS LIVE TRACKER</p>
               <p className="text-xs text-gray-500 mt-2">
                 Real-time crew location tracking
