@@ -97,7 +97,7 @@ export default function Index() {
         },
         body: JSON.stringify({
           action: "save_all",
-          crew_members: members
+          crew_members: members,
         }),
       });
 
