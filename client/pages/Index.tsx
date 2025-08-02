@@ -322,6 +322,18 @@ export default function Index() {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  const handleFlightLeadLogin = () => {
+    if (passwordInput === "15") {
+      setUserRole("lead");
+      setCurrentUser("Flight Lead");
+      setShowPasswordDialog(false);
+      setPasswordInput("");
+    } else {
+      alert("Incorrect password. Please try again.");
+      setPasswordInput("");
+    }
+  };
+
   const getStatusBadge = (status: "in" | "out") => {
     return status === "in" ? (
       <Badge className="bg-success text-success-foreground">IN</Badge>
