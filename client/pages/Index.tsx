@@ -75,27 +75,46 @@ export default function Index() {
     fetchCrewMembers();
   }, []);
 
-  // Helper function to save crew data to Netlify Blobs
+  // Helper function to save crew data with multi-device sync
   const saveCrewMembers = async (members: CrewMember[]) => {
     try {
       const store = getCrewStore();
       if (store) {
         await store.setJSON("crew-members", members);
         console.log("✅ Crew data saved to Netlify Blobs successfully");
-      } else {
-        console.warn(
-          "⚠️ Netlify Blobs not available - saving to localStorage as fallback",
-        );
-        localStorage.setItem("crew-members-fallback", JSON.stringify(members));
+        return;
       }
     } catch (error) {
-      console.error("❌ Could not save to Netlify Blobs:", error);
-      // Fallback to localStorage
+      console.log("Netlify Blobs not available, trying API fallback");
+    }
+
+    // Fallback to API-based shared storage for multi-device sync
+    try {
+      const response = await fetch(`${API_BASE_URL}/crew.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "save_all",
+          crew_members: members
+        }),
+      });
+
+      if (response.ok) {
+        console.log("✅ Crew data saved to shared API storage");
+        return;
+      } else {
+        throw new Error("API save failed");
+      }
+    } catch (apiError) {
+      console.log("⚠️ API not available, using localStorage (device-only)");
+      // Final fallback to localStorage (device-specific)
       try {
         localStorage.setItem("crew-members-fallback", JSON.stringify(members));
-        console.log("💾 Saved to localStorage as fallback");
+        console.log("💾 Saved to localStorage (device-only) as final fallback");
       } catch (localError) {
-        console.error("❌ Could not save to localStorage either:", localError);
+        console.error("❌ Could not save anywhere:", localError);
       }
     }
   };
@@ -112,7 +131,7 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log("✅ Loaded crew data from Netlify Blobs");
+          console.log("�� Loaded crew data from Netlify Blobs");
           setLoading(false);
           return;
         }
