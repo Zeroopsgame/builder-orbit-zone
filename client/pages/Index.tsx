@@ -393,16 +393,16 @@ export default function Index() {
     return (
       <div className="h-screen bg-white flex flex-col">
         {/* Top Section - Air Force Branding */}
-        <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-8 md:py-12">
+        <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-4 md:py-6">
           <div className="absolute inset-0 bg-black opacity-40"></div>
           <div className="relative z-10 flex flex-col justify-center items-center text-white px-4">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
               alt="Air Force Logo"
-              className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6"
+              className="w-14 h-14 md:w-16 md:h-16 mb-2 md:mb-3"
             />
-            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">WELCOME BACK</h1>
-            <p className="text-lg md:text-xl text-slate-300">U.S. AIR FORCE</p>
+            <h1 className="text-xl md:text-2xl font-bold mb-1">WELCOME BACK</h1>
+            <p className="text-base md:text-lg text-slate-300">U.S. AIR FORCE</p>
           </div>
         </div>
 
