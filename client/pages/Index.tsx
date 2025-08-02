@@ -128,11 +128,19 @@ export default function Index() {
       }
 
       console.log(
-        "❌ No shared storage available - changes will not be saved!",
+        "❌ No shared storage available - saving to localStorage for testing!",
       );
       console.log(
         "🔄 Deploy to Netlify or fix API for proper multi-device sync",
       );
+
+      // Temporary localStorage save for testing (single-device only)
+      try {
+        localStorage.setItem("crew-members-temp", JSON.stringify(members));
+        console.log("📱 Saved to temporary localStorage for testing");
+      } catch (error) {
+        console.log("❌ Could not save to localStorage");
+      }
     }
   };
 
