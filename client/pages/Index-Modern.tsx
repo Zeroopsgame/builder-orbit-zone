@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
 import { Input } from "../components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import {
   Dialog,
@@ -28,25 +33,27 @@ interface CrewMember {
 
 export default function Index() {
   // Environment detection
-  const isNetlify = typeof window !== 'undefined' && 
-    (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('netlify.com'));
-  
+  const isNetlify =
+    typeof window !== "undefined" &&
+    (window.location.hostname.includes("netlify.app") ||
+      window.location.hostname.includes("netlify.com"));
+
   // API functions with environment detection
   const fetchCrewMembers = async (): Promise<CrewMember[]> => {
     if (isNetlify) {
       try {
         console.log("🔄 Fetching crew data from Netlify Function...");
-        const response = await fetch('/.netlify/functions/crew-data-simple', {
-          method: 'GET',
+        const response = await fetch("/.netlify/functions/crew-data-simple", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log("✅ Successfully fetched crew data:", data);
         return Array.isArray(data) ? data : [];
@@ -56,7 +63,7 @@ export default function Index() {
       }
     } else {
       console.log("🔄 Local dev environment - using localStorage fallback");
-      const stored = localStorage.getItem('crew-members');
+      const stored = localStorage.getItem("crew-members");
       if (stored) {
         try {
           return JSON.parse(stored);
@@ -72,18 +79,18 @@ export default function Index() {
     if (isNetlify) {
       try {
         console.log("💾 Saving crew data to Netlify Function...", members);
-        const response = await fetch('/.netlify/functions/crew-data-simple', {
-          method: 'POST',
+        const response = await fetch("/.netlify/functions/crew-data-simple", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ crewMembers: members }),
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const result = await response.json();
         console.log("✅ Successfully saved crew data:", result);
         return result.success === true;
@@ -94,7 +101,7 @@ export default function Index() {
     } else {
       console.log("💾 Local dev environment - saving to localStorage");
       try {
-        localStorage.setItem('crew-members', JSON.stringify(members));
+        localStorage.setItem("crew-members", JSON.stringify(members));
         console.log("✅ Successfully saved crew data to localStorage");
         return true;
       } catch (error) {
@@ -111,8 +118,8 @@ export default function Index() {
       isIn: true,
       lastUpdate: new Date().toISOString(),
       location: "",
-      notes: ""
-    }
+      notes: "",
+    },
   ];
 
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
@@ -129,7 +136,9 @@ export default function Index() {
   const [statusNotes, setStatusNotes] = useState("");
   const [statusLocation, setStatusLocation] = useState("");
   const [showStatusDialog, setShowStatusDialog] = useState(false);
-  const [pendingStatusMember, setPendingStatusMember] = useState<string | null>(null);
+  const [pendingStatusMember, setPendingStatusMember] = useState<string | null>(
+    null,
+  );
 
   // Load crew members on component mount
   useEffect(() => {
@@ -145,7 +154,7 @@ export default function Index() {
       setCrewMembers(sortedMembers);
       setLoading(false);
     };
-    
+
     loadCrewMembers();
   }, []);
 
@@ -155,7 +164,7 @@ export default function Index() {
       const timeoutId = setTimeout(() => {
         saveCrewMembers(crewMembers);
       }, 1000); // Save after 1 second of no changes
-      
+
       return () => clearTimeout(timeoutId);
     }
   }, [crewMembers, loading]);
@@ -173,10 +182,10 @@ export default function Index() {
 
   const addCrewMember = async () => {
     if (newMemberName.trim()) {
-      const name = newMemberName.startsWith("OT ") 
-        ? newMemberName 
+      const name = newMemberName.startsWith("OT ")
+        ? newMemberName
         : `OT ${newMemberName}`;
-      
+
       const newMember: CrewMember = {
         id: Date.now().toString(),
         name: name,
@@ -185,23 +194,23 @@ export default function Index() {
         location: "",
         notes: "",
       };
-      
+
       const updatedMembers = [...crewMembers, newMember].sort((a, b) => {
         const nameA = a.name.replace(/^OT\s*/, "").trim();
         const nameB = b.name.replace(/^OT\s*/, "").trim();
         return nameA.localeCompare(nameB);
       });
-      
+
       setCrewMembers(updatedMembers);
       setNewMemberName("");
-      
+
       // Save immediately for new members
       await saveCrewMembers(updatedMembers);
     }
   };
 
   const removeMember = async (id: string) => {
-    const updatedMembers = crewMembers.filter(member => member.id !== id);
+    const updatedMembers = crewMembers.filter((member) => member.id !== id);
     setCrewMembers(updatedMembers);
     await saveCrewMembers(updatedMembers);
   };
@@ -213,20 +222,20 @@ export default function Index() {
 
   const saveEditingName = async () => {
     if (editingMemberId && editingName.trim()) {
-      const name = editingName.startsWith("OT ") 
-        ? editingName 
+      const name = editingName.startsWith("OT ")
+        ? editingName
         : `OT ${editingName}`;
-        
-      const updatedMembers = crewMembers.map(member =>
-        member.id === editingMemberId
-          ? { ...member, name: name }
-          : member
-      ).sort((a, b) => {
-        const nameA = a.name.replace(/^OT\s*/, "").trim();
-        const nameB = b.name.replace(/^OT\s*/, "").trim();
-        return nameA.localeCompare(nameB);
-      });
-      
+
+      const updatedMembers = crewMembers
+        .map((member) =>
+          member.id === editingMemberId ? { ...member, name: name } : member,
+        )
+        .sort((a, b) => {
+          const nameA = a.name.replace(/^OT\s*/, "").trim();
+          const nameB = b.name.replace(/^OT\s*/, "").trim();
+          return nameA.localeCompare(nameB);
+        });
+
       setCrewMembers(updatedMembers);
       setEditingMemberId(null);
       setEditingName("");
@@ -256,9 +265,9 @@ export default function Index() {
     memberId: string,
     isIn: boolean,
     location: string = "",
-    notes: string = ""
+    notes: string = "",
   ) => {
-    const updatedMembers = crewMembers.map(member =>
+    const updatedMembers = crewMembers.map((member) =>
       member.id === memberId
         ? {
             ...member,
@@ -267,7 +276,7 @@ export default function Index() {
             notes,
             lastUpdate: new Date().toISOString(),
           }
-        : member
+        : member,
     );
     setCrewMembers(updatedMembers);
     await saveCrewMembers(updatedMembers);
@@ -275,7 +284,12 @@ export default function Index() {
 
   const handleStatusDialogSubmit = () => {
     if (pendingStatusMember && statusLocation.trim()) {
-      updateMemberStatus(pendingStatusMember, false, statusLocation, statusNotes);
+      updateMemberStatus(
+        pendingStatusMember,
+        false,
+        statusLocation,
+        statusNotes,
+      );
       setShowStatusDialog(false);
       setPendingStatusMember(null);
       setStatusNotes("");
@@ -317,7 +331,6 @@ export default function Index() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
           <div className="bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8">
-            
             {/* Header */}
             <div className="text-center mb-8">
               <div className="flex flex-col items-center space-y-6">
@@ -339,7 +352,7 @@ export default function Index() {
                 </div>
               </div>
             </div>
-            
+
             {/* Status Summary */}
             <div className="mb-8">
               <div className="bg-black/20 backdrop-blur-sm rounded-xl p-6 border border-white/10">
@@ -377,10 +390,12 @@ export default function Index() {
 
             {/* Crew Status List */}
             <div className="space-y-6">
-              <h3 className="text-white font-semibold text-xl text-center">Select Your Name</h3>
+              <h3 className="text-white font-semibold text-xl text-center">
+                Select Your Name
+              </h3>
               <div className="max-h-80 overflow-y-auto space-y-3 pr-2">
                 {crewMembers.map((member) => (
-                  <div 
+                  <div
                     key={member.id}
                     className="bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 hover:border-white/20 transition-all cursor-pointer group"
                     onClick={() => {
@@ -390,16 +405,22 @@ export default function Index() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className={`w-4 h-4 rounded-full ${member.isIn ? 'bg-green-400' : 'bg-red-400'} shadow-lg`}></div>
-                        <span className="text-white font-medium text-lg">{member.name}</span>
+                        <div
+                          className={`w-4 h-4 rounded-full ${member.isIn ? "bg-green-400" : "bg-red-400"} shadow-lg`}
+                        ></div>
+                        <span className="text-white font-medium text-lg">
+                          {member.name}
+                        </span>
                       </div>
                       <div className="text-right">
-                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          member.isIn 
-                            ? 'bg-green-400/20 text-green-300 border border-green-400/30' 
-                            : 'bg-red-400/20 text-red-300 border border-red-400/30'
-                        }`}>
-                          {member.isIn ? 'IN' : 'OUT'}
+                        <div
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            member.isIn
+                              ? "bg-green-400/20 text-green-300 border border-green-400/30"
+                              : "bg-red-400/20 text-red-300 border border-red-400/30"
+                          }`}
+                        >
+                          {member.isIn ? "IN" : "OUT"}
                         </div>
                         <div className="text-gray-400 text-sm mt-1">
                           {formatTime(member.lastUpdate)}
@@ -414,7 +435,7 @@ export default function Index() {
                   </div>
                 ))}
               </div>
-              
+
               {/* Flight Lead Access */}
               <div className="pt-6 border-t border-white/20">
                 <Dialog
@@ -432,14 +453,18 @@ export default function Index() {
                   </DialogTrigger>
                   <DialogContent className="bg-slate-800 border-gray-600">
                     <DialogHeader>
-                      <DialogTitle className="text-white">Flight Lead Access</DialogTitle>
+                      <DialogTitle className="text-white">
+                        Flight Lead Access
+                      </DialogTitle>
                       <DialogDescription className="text-gray-300">
                         Enter the flight lead password to manage crew members.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="password" className="text-white">Password</Label>
+                        <Label htmlFor="password" className="text-white">
+                          Password
+                        </Label>
                         <Input
                           id="password"
                           type="password"
@@ -453,7 +478,10 @@ export default function Index() {
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button onClick={handlePasswordSubmit} className="bg-blue-600 hover:bg-blue-700">
+                      <Button
+                        onClick={handlePasswordSubmit}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
                         Access
                       </Button>
                     </DialogFooter>
@@ -479,10 +507,10 @@ export default function Index() {
               className="w-20 h-20 object-contain"
             />
             <div>
-              <h1 className="text-4xl font-bold text-white">
-                OTS FLIGHT 15
-              </h1>
-              <p className="text-blue-200 font-medium text-lg">STATUS TRACKER</p>
+              <h1 className="text-4xl font-bold text-white">OTS FLIGHT 15</h1>
+              <p className="text-blue-200 font-medium text-lg">
+                STATUS TRACKER
+              </p>
             </div>
           </div>
         </div>
@@ -491,10 +519,16 @@ export default function Index() {
           <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-2xl">
             <CardHeader className="pb-6">
               <div className="flex justify-between items-center">
-                <CardTitle className="text-2xl text-white">Flight Dashboard</CardTitle>
+                <CardTitle className="text-2xl text-white">
+                  Flight Dashboard
+                </CardTitle>
                 <div className="flex items-center space-x-4">
                   <span className="text-blue-200">
-                    Logged in as: <span className="font-medium text-white">{currentUser}</span> ({userRole})
+                    Logged in as:{" "}
+                    <span className="font-medium text-white">
+                      {currentUser}
+                    </span>{" "}
+                    ({userRole})
                   </span>
                   <Button
                     variant="outline"
@@ -546,18 +580,21 @@ export default function Index() {
 
               {userRole === "lead" && (
                 <div className="mb-8 p-6 bg-yellow-500/10 rounded-xl border border-yellow-400/30">
-                  <h3 className="font-semibold text-yellow-300 mb-4 text-lg">Flight Lead Controls</h3>
+                  <h3 className="font-semibold text-yellow-300 mb-4 text-lg">
+                    Flight Lead Controls
+                  </h3>
                   <div className="flex gap-3">
                     <Input
                       placeholder="Enter crew member name"
                       value={newMemberName}
                       onChange={(e) => setNewMemberName(e.target.value)}
-                      onKeyPress={(e) =>
-                        e.key === "Enter" && addCrewMember()
-                      }
+                      onKeyPress={(e) => e.key === "Enter" && addCrewMember()}
                       className="bg-white/10 border-white/20 text-white placeholder-gray-300"
                     />
-                    <Button onClick={addCrewMember} className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2">
+                    <Button
+                      onClick={addCrewMember}
+                      className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
+                    >
                       <UserPlus className="h-4 w-4" />
                       Add
                     </Button>
@@ -676,7 +713,9 @@ export default function Index() {
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="location" className="text-white">Location *</Label>
+                <Label htmlFor="location" className="text-white">
+                  Location *
+                </Label>
                 <Input
                   id="location"
                   value={statusLocation}
@@ -686,7 +725,9 @@ export default function Index() {
                 />
               </div>
               <div>
-                <Label htmlFor="notes" className="text-white">Notes (optional)</Label>
+                <Label htmlFor="notes" className="text-white">
+                  Notes (optional)
+                </Label>
                 <Textarea
                   id="notes"
                   value={statusNotes}
