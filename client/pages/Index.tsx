@@ -516,7 +516,7 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 p-4 md:p-6">
+    <div className="h-screen bg-white flex flex-col">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Back Button */}
         <div className="flex justify-start">
