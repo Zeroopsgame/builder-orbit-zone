@@ -486,7 +486,14 @@ export default function Index() {
                 Or select your name:
               </p>
               <div className="space-y-2">
-                {crewMembers.map((member) => (
+                {crewMembers
+                  .sort((a, b) => {
+                    // Sort by first name (the part after "OT ")
+                    const firstNameA = a.name.split(' ')[0].toLowerCase();
+                    const firstNameB = b.name.split(' ')[0].toLowerCase();
+                    return firstNameA.localeCompare(firstNameB);
+                  })
+                  .map((member) => (
                   <Button
                     key={member.id}
                     variant="outline"
