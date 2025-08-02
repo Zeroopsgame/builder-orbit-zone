@@ -45,6 +45,8 @@ export default function Index() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [noteDialogMember, setNoteDialogMember] = useState<string | null>(null);
   const [noteText, setNoteText] = useState("");
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
 
   // Load crew members from API
   useEffect(() => {
