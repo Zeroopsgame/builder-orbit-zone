@@ -109,7 +109,7 @@ export default function Index() {
     }
   };
 
-  const toggleStatus = (id: string, checked: boolean) => {
+  const toggleStatus = async (id: string, checked: boolean) => {
     // Only allow toggle if user is flight lead or it's their own status
     const member = crewMembers.find((m) => m.id === id);
     if (userRole !== "lead" && member?.name !== currentUser) {
@@ -123,18 +123,32 @@ export default function Index() {
       return;
     }
 
-    setCrewMembers((members) =>
-      members.map((member) =>
-        member.id === id
-          ? {
-              ...member,
-              status: newStatus,
-              note: undefined,
-              timestamp: new Date(),
-            }
-          : member,
-      ),
-    );
+    try {
+      const response = await fetch(`${API_BASE_URL}/crew.php`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+
+      if (response.ok) {
+        setCrewMembers((members) =>
+          members.map((member) =>
+            member.id === id
+              ? {
+                  ...member,
+                  status: newStatus,
+                  note: undefined,
+                  timestamp: new Date(),
+                }
+              : member,
+          ),
+        );
+      }
+    } catch (error) {
+      console.error('Failed to update status:', error);
+    }
   };
 
   const confirmStatusWithNote = () => {
