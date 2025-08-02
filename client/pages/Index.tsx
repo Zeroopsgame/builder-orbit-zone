@@ -407,7 +407,7 @@ export default function Index() {
         </div>
 
         {/* Middle Section - Login Form */}
-        <div className="flex-1 flex items-center justify-center px-4 py-8 md:py-12">
+        <div className="flex-grow flex items-center justify-center px-4 py-8 md:py-12 min-h-0">
           <div className="w-full max-w-md space-y-6 md:space-y-8">
             {/* Header */}
             <div className="text-center">
