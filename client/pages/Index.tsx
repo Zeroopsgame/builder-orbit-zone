@@ -175,6 +175,21 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* Back Button */}
+        <div className="flex justify-start">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setCurrentUser(null);
+              setUserRole(null);
+            }}
+            className="gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex flex-col items-center space-y-3">
