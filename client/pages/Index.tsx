@@ -374,25 +374,36 @@ export default function Index() {
       return "from-red-300 to-red-500";
     };
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 p-4 md:p-6 flex items-center justify-center">
-        <Card className="w-full max-w-md border-blue-200 shadow-xl">
-          <CardHeader className="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-t-lg">
-            <div className="flex flex-col items-center space-y-3">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-blue-900 mb-1">U.S. AIR FORCE</h1>
-                <h2 className="text-lg font-semibold text-blue-800">OTS FLIGHT 15</h2>
-                <p className="text-sm text-blue-700 mt-2">STATUS LIVE TRACKER</p>
-              </div>
+      <div className="min-h-screen bg-white flex">
+        {/* Left Side - Air Force Branding */}
+        <div className="hidden lg:flex lg:flex-1 relative bg-gradient-to-br from-slate-900 to-slate-700">
+          <div className="absolute inset-0 bg-black opacity-40"></div>
+          <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
+            <svg className="w-24 h-24 mb-8 text-white" viewBox="0 0 100 100" fill="currentColor">
+              <path d="M50 10 L30 30 L50 25 L70 30 Z M50 25 L30 30 L35 50 L50 45 Z M50 25 L70 30 L65 50 L50 45 Z M50 45 L35 50 L40 70 L50 65 Z M50 45 L65 50 L60 70 L50 65 Z M45 70 L50 65 L55 70 L50 80 Z M40 70 L45 70 L50 80 L45 85 Z M55 70 L60 70 L55 85 L50 80 Z"/>
+            </svg>
+            <h1 className="text-4xl font-bold mb-2">WELCOME BACK</h1>
+            <p className="text-xl text-slate-300">U.S. AIR FORCE</p>
+          </div>
+        </div>
+
+        {/* Right Side - Login Form */}
+        <div className="flex-1 flex items-center justify-center p-4 md:p-12 lg:p-16">
+          <div className="w-full max-w-md space-y-8">
+            {/* Header */}
+            <div className="text-center">
+              <h2 className="text-3xl font-medium text-gray-600 mb-2">OTS FLIGHT 15</h2>
+              <h3 className="text-xl font-medium text-gray-500 mb-8">STATUS LIVE TRACKER</h3>
+              <p className="text-sm text-gray-500 mb-8">Select your access level to begin</p>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Compact Status Bar */}
-            <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-600">
+
+            {/* Status Overview */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-600">
                   {getStatusMessage()}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-sm text-gray-500">
                   {presentPercentage}%
                 </span>
               </div>
@@ -404,35 +415,35 @@ export default function Index() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log("Flight Lead button clicked");
-                  setShowPasswordDialog(true);
-                }}
-                className="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold"
-                variant="default"
-              >
-                Flight Lead Access
-              </Button>
-            </div>
+            {/* Flight Lead Button */}
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("Flight Lead button clicked");
+                setShowPasswordDialog(true);
+              }}
+              className="w-full h-12 bg-blue-900 hover:bg-blue-800 text-white font-medium text-base"
+              variant="default"
+            >
+              Flight Lead Access
+            </Button>
 
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Select Your Name:</p>
+            {/* Crew Member Selection */}
+            <div className="space-y-4">
+              <p className="text-sm font-medium text-gray-600 text-center">Or select your name:</p>
               <div className="space-y-2">
                 {crewMembers.map((member) => (
                   <Button
                     key={member.id}
                     variant="outline"
-                    className="w-full justify-between px-4 py-3 border-blue-200 hover:bg-blue-50"
+                    className="w-full justify-between px-4 py-3 h-auto border-gray-200 hover:bg-gray-50 text-left"
                     onClick={() => {
                       setCurrentUser(member.name);
                       setUserRole("crew");
                     }}
                   >
-                    <span className="font-medium">OT {member.name}</span>
+                    <span className="font-medium text-gray-700">OT {member.name}</span>
                     <div className="text-right text-xs">
                       {member.status === "out" ? (
                         <span className="px-2 py-1 rounded-full font-medium bg-red-100 text-red-700">
@@ -449,8 +460,8 @@ export default function Index() {
                 ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Password Dialog - Available on login screen */}
         <Dialog
