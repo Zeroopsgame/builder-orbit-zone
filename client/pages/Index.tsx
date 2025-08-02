@@ -47,6 +47,8 @@ export default function Index() {
   const [noteText, setNoteText] = useState("");
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
+  const [editingMemberId, setEditingMemberId] = useState<string | null>(null);
+  const [editNameInput, setEditNameInput] = useState("");
 
   // Load crew members from API
   useEffect(() => {
