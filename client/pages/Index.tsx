@@ -726,19 +726,7 @@ export default function Index() {
                           </p>
                         </div>
                       )}
-                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span>{formatTime(member.timestamp)}</span>
-                        {member.note && (
-                          <>
-                            <span>•</span>
-                            <span className="flex items-center space-x-1">
-                              <MapPin className="h-3 w-3" />
-                              <span>{member.note}</span>
-                            </span>
-                          </>
-                        )}
-                      </div>
+
                     </div>
                   </div>
 
