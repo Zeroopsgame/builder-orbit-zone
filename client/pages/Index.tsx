@@ -68,77 +68,61 @@ export default function Index() {
   }, []);
 
   const fetchCrewMembers = async () => {
-    // In development mode, use sample data directly
-    if (isDevelopment) {
-      console.log("Development mode detected - using sample data");
-      setCrewMembers([
-        {
-          id: "1",
-          name: "John Smith",
-          status: "in",
-          timestamp: new Date(Date.now() - 30 * 60 * 1000),
-        },
-        {
-          id: "2",
-          name: "Sarah Johnson",
-          status: "out",
-          note: "Lunch",
-          timestamp: new Date(Date.now() - 15 * 60 * 1000),
-        },
-        {
-          id: "3",
-          name: "Mike Davis",
-          status: "in",
-          timestamp: new Date(Date.now() - 45 * 60 * 1000),
-        },
-      ]);
-      setLoading(false);
-      return;
-    }
-
-    // In production mode, try to fetch from API
     try {
-      const response = await fetch(`${API_BASE_URL}/crew.php`);
-      if (response.ok) {
-        const data = await response.json();
-        const formattedData = data.map((member: any) => ({
-          ...member,
-          timestamp: new Date(member.timestamp),
-        }));
-        setCrewMembers(formattedData);
-      } else {
-        throw new Error("API not available");
+      const store = getCrewStore();
+      if (store) {
+        // Try to load from Netlify Blobs
+        const storedData = await store.get("crew-members", { type: "json" });
+        if (storedData && storedData.length > 0) {
+          const formattedData = storedData.map((member: any) => ({
+            ...member,
+            timestamp: new Date(member.timestamp),
+          }));
+          setCrewMembers(formattedData);
+          setLoading(false);
+          return;
+        }
       }
     } catch (error) {
-      console.error(
-        "Failed to fetch crew members, using fallback data:",
-        error,
-      );
-      // Use fallback data when API is not available
-      setCrewMembers([
-        {
-          id: "1",
-          name: "John Smith",
-          status: "in",
-          timestamp: new Date(Date.now() - 30 * 60 * 1000),
-        },
-        {
-          id: "2",
-          name: "Sarah Johnson",
-          status: "out",
-          note: "Lunch",
-          timestamp: new Date(Date.now() - 15 * 60 * 1000),
-        },
-        {
-          id: "3",
-          name: "Mike Davis",
-          status: "in",
-          timestamp: new Date(Date.now() - 45 * 60 * 1000),
-        },
-      ]);
-    } finally {
-      setLoading(false);
+      console.log("Netlify Blobs not available, using sample data");
     }
+
+    // Fallback to sample data if no stored data exists
+    const sampleData = [
+      {
+        id: "1",
+        name: "John Smith",
+        status: "in",
+        timestamp: new Date(Date.now() - 30 * 60 * 1000),
+      },
+      {
+        id: "2",
+        name: "Sarah Johnson",
+        status: "out",
+        note: "Lunch",
+        timestamp: new Date(Date.now() - 15 * 60 * 1000),
+      },
+      {
+        id: "3",
+        name: "Mike Davis",
+        status: "in",
+        timestamp: new Date(Date.now() - 45 * 60 * 1000),
+      },
+    ];
+
+    setCrewMembers(sampleData);
+
+    // Save sample data to Netlify Blobs for future use
+    try {
+      const store = getCrewStore();
+      if (store) {
+        await store.setJSON("crew-members", sampleData);
+      }
+    } catch (error) {
+      console.log("Could not save to Netlify Blobs");
+    }
+
+    setLoading(false);
   };
 
   const addCrewMember = async () => {
