@@ -129,7 +129,10 @@ export default function Index() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Button
-                onClick={() => setUserRole('lead')}
+                onClick={() => {
+                  setUserRole('lead');
+                  setCurrentUser('Flight Lead');
+                }}
                 className="w-full"
                 variant="default"
               >
