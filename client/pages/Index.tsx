@@ -110,12 +110,27 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
+          console.log("✅ Loaded crew data from Netlify Blobs");
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Try localStorage fallback
+        const fallbackData = localStorage.getItem("crew-members-fallback");
+        if (fallbackData) {
+          const parsedData = JSON.parse(fallbackData);
+          const formattedData = parsedData.map((member: any) => ({
+            ...member,
+            timestamp: new Date(member.timestamp),
+          }));
+          setCrewMembers(formattedData);
+          console.log("💾 Loaded crew data from localStorage fallback");
           setLoading(false);
           return;
         }
       }
     } catch (error) {
-      console.log("Netlify Blobs not available, using sample data");
+      console.log("❌ Error loading data, using sample data:", error);
     }
 
     // Fallback to sample data if no stored data exists
