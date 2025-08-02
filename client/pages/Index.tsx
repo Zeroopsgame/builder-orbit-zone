@@ -388,8 +388,8 @@ export default function Index() {
         </div>
 
         {/* Bottom Section - Login Form */}
-        <div className="flex-1 flex items-center justify-center p-4 md:p-12">
-          <div className="w-full max-w-md space-y-8">
+        <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12">
+          <div className="w-full max-w-md space-y-6 md:space-y-8">
             {/* Header */}
             <div className="text-center">
               <h2 className="text-3xl font-medium text-gray-600 mb-2">OTS FLIGHT 15</h2>
