@@ -321,7 +321,7 @@ export default function Index() {
               <img
                 src="https://builder.io/api/v1/image/assets%2F79cc5a94c2b54dff8b956b850b45e84f%2Facc6ea8dacea44a4b45a09b33c5f36c3"
                 alt="Air Force Logo"
-                className="w-20 h-20 object-contain"
+                className="w-32 h-32 object-contain"
               />
               <div>
                 <h1 className="text-2xl font-bold text-blue-700">
