@@ -468,13 +468,6 @@ export default function Index() {
               </div>
             </div>
           </div>
-
-        {/* Copyright Footer - Sticky at bottom */}
-        <footer className="bg-gray-100 border-t border-gray-200 py-4">
-          <div className="text-center">
-            <p className="text-xs text-gray-500">Copyright 2025 OT Moser</p>
-          </div>
-        </footer>
       </div>
 
         {/* Password Dialog - Available on login screen */}
