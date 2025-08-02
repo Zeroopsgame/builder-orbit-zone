@@ -205,6 +205,18 @@ export default function Index() {
     (member) => member.status === "out",
   ).length;
 
+  // Show loading spinner
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-muted-foreground">Loading crew status...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Show login screen if no user selected (unless flight lead)
   if ((!currentUser && userRole !== "lead") || !userRole) {
     return (
