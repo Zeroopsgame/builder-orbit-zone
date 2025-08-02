@@ -319,7 +319,7 @@ export default function Index() {
           <CardHeader className="text-center pb-2">
             <div className="flex flex-col items-center space-y-4">
               <img
-                src="https://builder.io/api/v1/image/assets%2F79cc5a94c2b54dff8b956b850b45e84f%2Facc6ea8dacea44a4b45a09b33c5f36c3"
+                src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F962aeba48dbd4536b2fe3a0a4e31965f?format=webp&width=800"
                 alt="Air Force Logo"
                 className="w-32 h-32 object-contain"
               />
