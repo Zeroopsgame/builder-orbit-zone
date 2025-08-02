@@ -520,21 +520,19 @@ export default function Index() {
                     }}
                   >
                     <span className="font-medium">OT {member.name}</span>
-                    <div className={`text-xs px-2 py-1 rounded-full ${
-                      member.status === "out"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-green-100 text-green-700"
-                    } ${member.status === "out" ? "text-right" : ""}`}>
-                      {member.status === "out" ? (
-                        <div className="space-y-0.5">
-                          <div className="font-medium">OUT</div>
-                          <div className="text-xs opacity-80">
-                            @ {formatTime(member.timestamp)}
-                            {member.note && <div>@ {member.note}</div>}
-                          </div>
+                    <div className="text-right text-xs space-y-1">
+                      <div className={`px-2 py-1 rounded-full font-medium ${
+                        member.status === "out"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-green-100 text-green-700"
+                      }`}>
+                        {member.status === "out" ? "OUT" : "IN"}
+                      </div>
+                      {member.status === "out" && (
+                        <div className="text-xs text-gray-500 leading-tight">
+                          {formatTime(member.timestamp)}
+                          {member.note && <div>{member.note}</div>}
                         </div>
-                      ) : (
-                        "IN"
                       )}
                     </div>
                   </Button>
