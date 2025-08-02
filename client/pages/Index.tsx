@@ -188,7 +188,11 @@ export default function Index() {
     } catch (error) {
       console.log("Development mode: using local state (API not available)");
       // Fallback to local state
-      setCrewMembers((members) => members.filter((member) => member.id !== id));
+      const updatedMembers = crewMembers.filter((member) => member.id !== id);
+      setCrewMembers(updatedMembers);
+
+      // Save to Netlify Blobs for multi-user persistence
+      await saveCrewMembers(updatedMembers);
     }
   };
 
