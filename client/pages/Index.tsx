@@ -465,22 +465,6 @@ export default function Index() {
     };
     return (
       <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
-        <div className="w-full max-w-md">
-          {/* Status Bar */}
-          <div className="bg-white border rounded-xl shadow-sm p-4 mb-6">
-            <div className="text-center space-y-3">
-              <p className="text-sm font-medium text-gray-600">{getStatusMessage()}</p>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div
-                  className={`h-3 rounded-full bg-gradient-to-r ${getStatusColor()} transition-all duration-500`}
-                  style={{ width: `${presentPercentage}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-gray-500">{presentCount}/{totalCount} crew present ({presentPercentage}%)</p>
-            </div>
-          </div>
-        </div>
-
         <Card className="w-full max-w-md">
           <CardHeader>
             <div className="flex flex-col items-center space-y-3">
