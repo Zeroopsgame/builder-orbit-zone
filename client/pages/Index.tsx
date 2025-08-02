@@ -90,6 +90,11 @@ export default function Index() {
 
     // Fallback to API-based shared storage for multi-device sync
     try {
+      console.log("🔄 Attempting to save to API:", `${API_BASE_URL}/crew.php`);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
       const response = await fetch(`${API_BASE_URL}/crew.php`, {
         method: "POST",
         headers: {
@@ -99,16 +104,25 @@ export default function Index() {
           action: "save_all",
           crew_members: members,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         console.log("✅ Crew data saved to shared API storage");
         return;
       } else {
-        throw new Error("API save failed");
+        console.log("⚠️ API save returned error status:", response.status, response.statusText);
+        throw new Error(`API save failed: ${response.status}`);
       }
     } catch (apiError) {
-      console.log("⚠️ API not available, using localStorage (device-only)");
+      if (apiError.name === 'AbortError') {
+        console.log("⚠️ API save request timed out after 5 seconds");
+      } else {
+        console.log("⚠️ API save failed:", apiError.message || apiError);
+      }
+
       // Final fallback to localStorage (device-specific)
       try {
         localStorage.setItem("crew-members-fallback", JSON.stringify(members));
