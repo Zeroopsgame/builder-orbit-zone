@@ -118,8 +118,8 @@ export default function Index() {
   const inCount = crewMembers.filter(member => member.status === 'in').length;
   const outCount = crewMembers.filter(member => member.status === 'out').length;
 
-  // Show login screen if no user selected
-  if (!currentUser || !userRole) {
+  // Show login screen if no user selected (unless flight lead)
+  if ((!currentUser && userRole !== 'lead') || !userRole) {
     return (
       <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
         <Card className="w-full max-w-md">
