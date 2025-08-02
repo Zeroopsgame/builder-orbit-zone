@@ -717,6 +717,12 @@ export default function Index() {
               .filter(
                 (member) => userRole === "lead" || member.name === currentUser,
               )
+              .sort((a, b) => {
+                // Sort by first name (the part after "OT ")
+                const firstNameA = a.name.split(' ')[0].toLowerCase();
+                const firstNameB = b.name.split(' ')[0].toLowerCase();
+                return firstNameA.localeCompare(firstNameB);
+              })
               .map((member) => (
                 <div
                   key={member.id}
