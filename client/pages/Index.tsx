@@ -377,7 +377,12 @@ export default function Index() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Button
-                onClick={() => setShowPasswordDialog(true)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log("Flight Lead button clicked");
+                  setShowPasswordDialog(true);
+                }}
                 className="w-full"
                 variant="default"
               >
