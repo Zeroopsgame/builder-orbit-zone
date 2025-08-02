@@ -489,42 +489,42 @@ export default function Index() {
                 {crewMembers
                   .sort((a, b) => {
                     // Sort by first name (the part after "OT ")
-                    const firstNameA = a.name.split(' ')[0].toLowerCase();
-                    const firstNameB = b.name.split(' ')[0].toLowerCase();
+                    const firstNameA = a.name.split(" ")[0].toLowerCase();
+                    const firstNameB = b.name.split(" ")[0].toLowerCase();
                     return firstNameA.localeCompare(firstNameB);
                   })
                   .map((member) => (
-                  <Button
-                    key={member.id}
-                    variant="outline"
-                    className="w-full justify-between px-4 py-3 h-auto border-gray-200 hover:bg-gray-50 text-left"
-                    onClick={() => {
-                      setCurrentUser(member.name);
-                      setUserRole("crew");
-                    }}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 border border-gray-200 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-gray-500" />
+                    <Button
+                      key={member.id}
+                      variant="outline"
+                      className="w-full justify-between px-4 py-3 h-auto border-gray-200 hover:bg-gray-50 text-left"
+                      onClick={() => {
+                        setCurrentUser(member.name);
+                        setUserRole("crew");
+                      }}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 border border-gray-200 rounded-full flex items-center justify-center">
+                          <User className="w-4 h-4 text-gray-500" />
+                        </div>
+                        <span className="font-medium text-gray-700">
+                          OT {member.name}
+                        </span>
                       </div>
-                      <span className="font-medium text-gray-700">
-                        OT {member.name}
-                      </span>
-                    </div>
-                    <div className="text-right text-xs">
-                      {member.status === "out" ? (
-                        <span className="px-2 py-1 rounded-full font-medium bg-red-100 text-red-700">
-                          OUT @ {formatTime(member.timestamp)}
-                          {member.note && ` • ${member.note}`}
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-700">
-                          IN
-                        </span>
-                      )}
-                    </div>
-                  </Button>
-                ))}
+                      <div className="text-right text-xs">
+                        {member.status === "out" ? (
+                          <span className="px-2 py-1 rounded-full font-medium bg-red-100 text-red-700">
+                            OUT @ {formatTime(member.timestamp)}
+                            {member.note && ` • ${member.note}`}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-700">
+                            IN
+                          </span>
+                        )}
+                      </div>
+                    </Button>
+                  ))}
               </div>
             </div>
 
@@ -719,8 +719,8 @@ export default function Index() {
               )
               .sort((a, b) => {
                 // Sort by first name (the part after "OT ")
-                const firstNameA = a.name.split(' ')[0].toLowerCase();
-                const firstNameB = b.name.split(' ')[0].toLowerCase();
+                const firstNameA = a.name.split(" ")[0].toLowerCase();
+                const firstNameB = b.name.split(" ")[0].toLowerCase();
                 return firstNameA.localeCompare(firstNameB);
               })
               .map((member) => (
