@@ -444,9 +444,12 @@ export default function Index() {
 
   // Show login screen if no user selected (unless flight lead)
   if ((!currentUser && userRole !== "lead") || !userRole) {
-    const presentCount = crewMembers.filter(member => member.status === "in").length;
+    const presentCount = crewMembers.filter(
+      (member) => member.status === "in",
+    ).length;
     const totalCount = crewMembers.length;
-    const presentPercentage = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+    const presentPercentage =
+      totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
 
     const getStatusMessage = () => {
       if (presentPercentage === 100) return "✨ Kawaii! All present! ✨";
@@ -480,8 +483,12 @@ export default function Index() {
             {/* Compact Status Bar */}
             <div className="bg-gray-50 rounded-lg p-3 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-600">{getStatusMessage()}</span>
-                <span className="text-xs text-gray-500">{presentPercentage}%</span>
+                <span className="text-xs font-medium text-gray-600">
+                  {getStatusMessage()}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {presentPercentage}%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
@@ -523,7 +530,8 @@ export default function Index() {
                     <div className="text-right text-xs">
                       {member.status === "out" ? (
                         <span className="px-2 py-1 rounded-full font-medium bg-red-100 text-red-700">
-                          OUT @ {formatTime(member.timestamp)}{member.note && ` • ${member.note}`}
+                          OUT @ {formatTime(member.timestamp)}
+                          {member.note && ` • ${member.note}`}
                         </span>
                       ) : (
                         <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-700">
@@ -645,7 +653,9 @@ export default function Index() {
                 <Users className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-3xl font-bold text-primary">{crewMembers.length}</p>
+                <p className="text-3xl font-bold text-primary">
+                  {crewMembers.length}
+                </p>
                 <p className="text-sm font-medium text-blue-700">Total Crew</p>
               </div>
             </CardContent>
@@ -770,7 +780,6 @@ export default function Index() {
                           </p>
                         </div>
                       )}
-
                     </div>
                   </div>
 
