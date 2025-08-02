@@ -412,7 +412,7 @@ export default function Index() {
                   console.log("Flight Lead button clicked");
                   setShowPasswordDialog(true);
                 }}
-                className="w-full"
+                className="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold"
                 variant="default"
               >
                 Flight Lead Access
