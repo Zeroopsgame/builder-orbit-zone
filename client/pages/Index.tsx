@@ -551,7 +551,7 @@ export default function Index() {
         </div>
 
         {/* Header */}
-        <div className="text-center space-y-4 bg-gray-50 rounded-lg p-6">
+        <div className="text-center space-y-4 p-6">
           <div className="flex flex-col items-center space-y-3">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
