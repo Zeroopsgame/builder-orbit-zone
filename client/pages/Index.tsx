@@ -505,7 +505,18 @@ export default function Index() {
                       setUserRole("crew");
                     }}
                   >
-                    OT {member.name}
+                    <div className="text-left w-full">
+                      <div className="font-medium">OT {member.name}</div>
+                      <div className={`text-xs mt-1 ${
+                        member.status === "out"
+                          ? "text-red-600"
+                          : "text-green-600"
+                      }`}>
+                        {member.status === "out"
+                          ? `out at ${formatTime(member.timestamp)} ${member.note ? `at ${member.note}` : ""}`
+                          : "present"}
+                      </div>
+                    </div>
                   </Button>
                 ))}
               </div>
