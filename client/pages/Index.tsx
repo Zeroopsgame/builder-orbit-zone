@@ -176,9 +176,18 @@ export default function Index() {
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Crew Status</h1>
-          <p className="text-muted-foreground">Real-time crew location tracking</p>
+        <div className="text-center space-y-4">
+          <div className="flex flex-col items-center space-y-3">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F3ddd57bd6dc845d9b67a66c8baf54949?format=webp&width=800"
+              alt="U.S. Air Force"
+              className="h-20 w-auto"
+            />
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground">Crew Status</h1>
+              <p className="text-muted-foreground">Real-time crew location tracking</p>
+            </div>
+          </div>
           <div className="flex items-center justify-center space-x-4 text-sm">
             <Badge variant="outline">
               {userRole === 'lead' ? 'Flight Lead' : `Logged in as: ${currentUser}`}
