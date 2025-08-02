@@ -62,12 +62,14 @@ export default function Index() {
     setCrewMembers(members => members.filter(member => member.id !== id));
   };
 
-  const toggleStatus = (id: string, newStatus: 'in' | 'out') => {
+  const toggleStatus = (id: string, checked: boolean) => {
+    const newStatus = checked ? 'in' : 'out';
+
     if (newStatus === 'out') {
       setNoteDialogMember(id);
       return;
     }
-    
+
     setCrewMembers(members =>
       members.map(member =>
         member.id === id
