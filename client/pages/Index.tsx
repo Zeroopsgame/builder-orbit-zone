@@ -551,13 +551,18 @@ export default function Index() {
         </div>
 
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 bg-gray-50 rounded-lg p-6">
           <div className="flex flex-col items-center space-y-3">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
+              alt="Air Force Logo"
+              className="w-12 h-12 mb-2"
+            />
             <div className="text-center">
-              <h1 className="text-3xl font-bold text-blue-900 mb-1">U.S. AIR FORCE</h1>
-              <h2 className="text-xl font-semibold text-blue-800">OTS FLIGHT 15</h2>
-              <p className="text-base text-blue-700 mt-2">STATUS LIVE TRACKER</p>
-              <p className="text-sm text-muted-foreground mt-2">
+              <h1 className="text-2xl font-bold text-gray-800 mb-1">U.S. AIR FORCE</h1>
+              <h2 className="text-lg font-semibold text-gray-700">OTS FLIGHT 15</h2>
+              <p className="text-sm text-gray-600 mt-1">STATUS LIVE TRACKER</p>
+              <p className="text-xs text-gray-500 mt-2">
                 Real-time crew location tracking
               </p>
             </div>
