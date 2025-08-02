@@ -88,10 +88,25 @@ export default function Index() {
     }
   };
 
-  const removeMember = (id: string) => {
+  const removeMember = async (id: string) => {
     // Only flight leads can remove members
     if (userRole !== "lead") return;
-    setCrewMembers((members) => members.filter((member) => member.id !== id));
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/crew.php`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        setCrewMembers((members) => members.filter((member) => member.id !== id));
+      }
+    } catch (error) {
+      console.error('Failed to remove crew member:', error);
+    }
   };
 
   const toggleStatus = (id: string, checked: boolean) => {
