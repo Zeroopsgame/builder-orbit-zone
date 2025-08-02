@@ -31,6 +31,11 @@ export default function Index() {
   // UPDATE THIS URL TO MATCH YOUR CPANEL DOMAIN
   const API_BASE_URL = 'https://nerkco.com/roster/api';
 
+  // Detect if we're in development mode
+  const isDevelopment = window.location.hostname === 'localhost' ||
+                       window.location.hostname.includes('fly.dev') ||
+                       window.location.hostname.includes('builder.codes');
+
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [loading, setLoading] = useState(true);
 
