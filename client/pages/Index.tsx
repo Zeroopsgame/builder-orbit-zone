@@ -1,85 +1,87 @@
 import { useState, useEffect } from "react";
-import {
-  Plus,
-  Users,
-  Clock,
-  MapPin,
-  Trash2,
-  ArrowLeft,
-  User,
-} from "lucide-react";
-import { getStore } from "@netlify/blobs";
 import { Button } from "../components/ui/button";
+import { Switch } from "../components/ui/switch";
 import { Input } from "../components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../components/ui/dialog";
+import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
-import { Switch } from "../components/ui/switch";
+import { Settings, UserPlus, Trash2, Edit, Check, X } from "lucide-react";
 
 interface CrewMember {
   id: string;
   name: string;
-  status: "in" | "out";
-  note?: string;
-  timestamp: Date;
+  isIn: boolean;
+  lastUpdate: string;
+  location: string;
+  notes: string;
 }
 
 export default function Index() {
-  // Initialize Netlify Blobs storage - using correct parameters per documentation
-  const getCrewStore = () => {
+  // API functions for Netlify Function
+  const fetchCrewMembers = async (): Promise<CrewMember[]> => {
     try {
-      // Check if we're in Netlify serverless environment (auto-config)
-      if (
-        typeof window !== "undefined" &&
-        window.location.hostname.includes("netlify.app")
-      ) {
-        console.log(
-          "🔄 Using Netlify Blobs with auto-config (serverless environment)",
-        );
-        return getStore("crew-status");
+      console.log("🔄 Fetching crew data from Netlify Function...");
+      const response = await fetch('/.netlify/functions/crew-data', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      // For client-side usage, we need siteID and token (when available)
-      const siteID =
-        process.env.REACT_APP_NETLIFY_SITE_ID || process.env.NETLIFY_SITE_ID;
-      const token =
-        process.env.REACT_APP_NETLIFY_AUTH_TOKEN ||
-        process.env.NETLIFY_AUTH_TOKEN;
-
-      if (siteID && token) {
-        console.log("🔄 Using Netlify Blobs with manual config (client-side)");
-        return getStore({
-          name: "crew-status",
-          siteID: siteID,
-          token: token,
-        });
-      } else {
-        console.log(
-          "❌ Netlify Blobs: Missing siteID or token for client-side usage",
-        );
-        console.log(
-          "🔧 Set REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN environment variables",
-        );
-        return null;
-      }
+      
+      const data = await response.json();
+      console.log("✅ Successfully fetched crew data:", data);
+      return Array.isArray(data) ? data : [];
     } catch (error) {
-      console.log("❌ Netlify Blobs initialization failed:", error);
-      console.log(
-        "🚨 Ensure you're deployed on Netlify or have proper environment variables",
-      );
-      return null;
+      console.error("❌ Failed to fetch crew data:", error);
+      // Return sample data if fetch fails
+      return [
+        {
+          id: "1",
+          name: "OT Sample User",
+          isIn: true,
+          lastUpdate: new Date().toISOString(),
+          location: "",
+          notes: ""
+        }
+      ];
+    }
+  };
+
+  const saveCrewMembers = async (members: CrewMember[]): Promise<boolean> => {
+    try {
+      console.log("💾 Saving crew data to Netlify Function...", members);
+      const response = await fetch('/.netlify/functions/crew-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ crewMembers: members }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log("✅ Successfully saved crew data:", result);
+      return result.success === true;
+    } catch (error) {
+      console.error("❌ Failed to save crew data:", error);
+      return false;
     }
   };
 
@@ -88,776 +90,545 @@ export default function Index() {
 
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<"crew" | "lead" | null>(null);
-  const [newMemberName, setNewMemberName] = useState("");
-  const [showAddDialog, setShowAddDialog] = useState(false);
-  const [noteDialogMember, setNoteDialogMember] = useState<string | null>(null);
-  const [noteText, setNoteText] = useState("");
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
+  const [password, setPassword] = useState("");
+  const [newMemberName, setNewMemberName] = useState("");
   const [editingMemberId, setEditingMemberId] = useState<string | null>(null);
-  const [editNameInput, setEditNameInput] = useState("");
+  const [editingName, setEditingName] = useState("");
 
-  // Load crew members from Netlify Blobs ONLY
+  const [statusNotes, setStatusNotes] = useState("");
+  const [statusLocation, setStatusLocation] = useState("");
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [pendingStatusMember, setPendingStatusMember] = useState<string | null>(null);
+
+  // Load crew members on component mount
   useEffect(() => {
-    fetchCrewMembers();
+    const loadCrewMembers = async () => {
+      setLoading(true);
+      const members = await fetchCrewMembers();
+      // Sort by first name after "OT"
+      const sortedMembers = members.sort((a, b) => {
+        const nameA = a.name.replace(/^OT\s*/, "").trim();
+        const nameB = b.name.replace(/^OT\s*/, "").trim();
+        return nameA.localeCompare(nameB);
+      });
+      setCrewMembers(sortedMembers);
+      setLoading(false);
+    };
+    
+    loadCrewMembers();
   }, []);
 
-  // Helper function to save crew data - ONLY Netlify Blobs (using correct API)
-  const saveCrewMembers = async (members: CrewMember[]) => {
-    try {
-      const store = getCrewStore();
-      if (store) {
-        // Use correct API: setJSON(key, data) per documentation
-        await store.setJSON("crew-members", members);
-        console.log("✅ Crew data saved to Netlify Blobs successfully!");
-        console.log("📊 Data saved:", members.length, "crew members");
-        return;
-      } else {
-        console.log("❌ Netlify Blobs store NOT AVAILABLE");
-        console.log("🚨 Check environment variables or deploy to Netlify");
-        console.log(
-          "🔧 Need: REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN",
-        );
-      }
-    } catch (error) {
-      console.log("❌ Netlify Blobs save failed:", error);
-      console.log("🚨 Check your environment configuration");
-      console.log(
-        "📖 See: https://docs.netlify.com/build/data-and-storage/netlify-blobs/",
-      );
+  // Auto-save when crewMembers changes (debounced)
+  useEffect(() => {
+    if (crewMembers.length > 0 && !loading) {
+      const timeoutId = setTimeout(() => {
+        saveCrewMembers(crewMembers);
+      }, 1000); // Save after 1 second of no changes
+      
+      return () => clearTimeout(timeoutId);
     }
+  }, [crewMembers, loading]);
 
-    // NO fallbacks - ONLY Netlify Blobs
-    console.log("⚠️ Changes are NOT saved - Netlify Blobs required!");
-  };
-
-  const fetchCrewMembers = async () => {
-    // Force clear ALL localStorage data on every load
-    console.log("🧹 Clearing all localStorage data - ONLY using Netlify Blobs");
-    localStorage.removeItem("crew-members-fallback");
-    localStorage.removeItem("crew-members");
-    localStorage.removeItem("crew-status");
-    localStorage.removeItem("crew-members-temp");
-
-    // ONLY try Netlify Blobs - NO other storage (using correct API per documentation)
-    try {
-      const store = getCrewStore();
-      if (store) {
-        console.log("🔄 Loading from Netlify Blobs using correct API...");
-        // Use correct API: get(key, { type: 'json' }) per documentation
-        const storedData = await store.get("crew-members", { type: "json" });
-
-        if (storedData && Array.isArray(storedData) && storedData.length > 0) {
-          const formattedData = storedData.map((member: any) => ({
-            ...member,
-            timestamp: new Date(member.timestamp),
-          }));
-          setCrewMembers(formattedData);
-          console.log("✅ Loaded crew data from Netlify Blobs successfully!");
-          console.log("📊 Data loaded:", formattedData.length, "crew members");
-          setLoading(false);
-          return;
-        } else if (storedData === null) {
-          console.log(
-            "⚠️ Netlify Blobs key 'crew-members' not found - initializing with sample data",
-          );
-        } else {
-          console.log(
-            "⚠️ Netlify Blobs returned unexpected data format:",
-            typeof storedData,
-            storedData,
-          );
-        }
-      } else {
-        console.log("❌ Netlify Blobs store NOT AVAILABLE");
-        console.log("🚨 Check environment variables or deploy to Netlify");
-        console.log(
-          "🔧 Need: REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN",
-        );
-      }
-    } catch (error) {
-      console.log("❌ Netlify Blobs API call failed:", error);
-      console.log("🚨 Check your environment configuration");
-      console.log(
-        "📖 See: https://docs.netlify.com/build/data-and-storage/netlify-blobs/",
-      );
+  const handlePasswordSubmit = () => {
+    if (password === "15") {
+      setUserRole("lead");
+      setShowPasswordDialog(false);
+      setPassword("");
+    } else {
+      alert("Incorrect password");
+      setPassword("");
     }
-
-    // Only use sample data if Netlify Blobs isn't available
-    console.log("📋 Using sample data - deploy to Netlify for persistence");
-
-    // Fallback to sample data if no stored data exists
-    const sampleData = [
-      {
-        id: "1",
-        name: "John Smith",
-        status: "in" as const,
-        timestamp: new Date(Date.now() - 30 * 60 * 1000),
-      },
-      {
-        id: "2",
-        name: "Sarah Johnson",
-        status: "out" as const,
-        note: "Lunch",
-        timestamp: new Date(Date.now() - 15 * 60 * 1000),
-      },
-      {
-        id: "3",
-        name: "Mike Davis",
-        status: "in" as const,
-        timestamp: new Date(Date.now() - 45 * 60 * 1000),
-      },
-    ];
-
-    setCrewMembers(sampleData);
-
-    // Try to save sample data to Netlify Blobs for future use (using correct API)
-    try {
-      const store = getCrewStore();
-      if (store) {
-        await store.setJSON("crew-members", sampleData);
-        console.log("✅ Sample data saved to Netlify Blobs using correct API");
-      }
-    } catch (error) {
-      console.log("❌ Could not save sample data to Netlify Blobs:", error);
-    }
-
-    setLoading(false);
   };
 
   const addCrewMember = async () => {
     if (newMemberName.trim()) {
+      const name = newMemberName.startsWith("OT ") 
+        ? newMemberName 
+        : `OT ${newMemberName}`;
+      
       const newMember: CrewMember = {
         id: Date.now().toString(),
-        name: newMemberName.trim(),
-        status: "in",
-        timestamp: new Date(),
+        name: name,
+        isIn: true,
+        lastUpdate: new Date().toISOString(),
+        location: "",
+        notes: "",
       };
-
-      const updatedMembers = [...crewMembers, newMember];
+      
+      const updatedMembers = [...crewMembers, newMember].sort((a, b) => {
+        const nameA = a.name.replace(/^OT\s*/, "").trim();
+        const nameB = b.name.replace(/^OT\s*/, "").trim();
+        return nameA.localeCompare(nameB);
+      });
+      
       setCrewMembers(updatedMembers);
-
-      // Save to Netlify Blobs for multi-user persistence
-      await saveCrewMembers(updatedMembers);
-
       setNewMemberName("");
-      setShowAddDialog(false);
+      
+      // Save immediately for new members
+      await saveCrewMembers(updatedMembers);
     }
   };
 
   const removeMember = async (id: string) => {
-    // Only flight leads can remove members
-    if (userRole !== "lead") return;
-
-    const updatedMembers = crewMembers.filter((member) => member.id !== id);
+    const updatedMembers = crewMembers.filter(member => member.id !== id);
     setCrewMembers(updatedMembers);
-
-    // Save to Netlify Blobs for multi-user persistence
     await saveCrewMembers(updatedMembers);
-  };
-
-  const toggleStatus = async (id: string, checked: boolean) => {
-    // Only allow toggle if user is flight lead or it's their own status
-    const member = crewMembers.find((m) => m.id === id);
-    if (userRole !== "lead" && member?.name !== currentUser) {
-      return; // Not authorized
-    }
-
-    const newStatus = checked ? "in" : "out";
-
-    if (newStatus === "out") {
-      setNoteDialogMember(id);
-      return;
-    }
-
-    const updatedMembers = crewMembers.map((member) =>
-      member.id === id
-        ? {
-            ...member,
-            status: newStatus,
-            note: undefined,
-            timestamp: new Date(),
-          }
-        : member,
-    );
-
-    setCrewMembers(updatedMembers);
-
-    // Save to Netlify Blobs for multi-user persistence
-    await saveCrewMembers(updatedMembers);
-  };
-
-  const confirmStatusWithNote = async () => {
-    if (noteDialogMember) {
-      const updatedMembers = crewMembers.map((member) =>
-        member.id === noteDialogMember
-          ? {
-              ...member,
-              status: "out" as const,
-              note: noteText,
-              timestamp: new Date(),
-            }
-          : member,
-      );
-
-      setCrewMembers(updatedMembers);
-
-      // Save to Netlify Blobs for multi-user persistence
-      await saveCrewMembers(updatedMembers);
-
-      setNoteDialogMember(null);
-      setNoteText("");
-    }
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
-  const getTimeSince = (date: Date) => {
-    const now = new Date();
-    const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60),
-    );
-
-    if (diffInMinutes < 1) return "just now";
-    if (diffInMinutes < 60) return `${diffInMinutes}m`;
-
-    const hours = Math.floor(diffInMinutes / 60);
-    const minutes = diffInMinutes % 60;
-
-    if (hours < 24) {
-      return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
-    }
-
-    const days = Math.floor(hours / 24);
-    const remainingHours = hours % 24;
-    return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
-  };
-
-  const handleFlightLeadLogin = () => {
-    if (passwordInput === "15") {
-      setUserRole("lead");
-      setCurrentUser("Flight Lead");
-      setShowPasswordDialog(false);
-      setPasswordInput("");
-    } else {
-      alert("Incorrect password. Please try again.");
-      setPasswordInput("");
-    }
-  };
-
-  const updateMemberName = async (id: string, newName: string) => {
-    if (!newName.trim()) return;
-
-    const updatedMembers = crewMembers.map((member) =>
-      member.id === id ? { ...member, name: newName.trim() } : member,
-    );
-
-    setCrewMembers(updatedMembers);
-
-    // Save to Netlify Blobs for multi-user persistence
-    await saveCrewMembers(updatedMembers);
-
-    setEditingMemberId(null);
-    setEditNameInput("");
   };
 
   const startEditingName = (member: CrewMember) => {
     setEditingMemberId(member.id);
-    setEditNameInput(member.name);
+    setEditingName(member.name);
   };
 
-  const getStatusBadge = (status: "in" | "out") => {
-    return status === "in" ? (
-      <Badge className="bg-success text-success-foreground">IN</Badge>
-    ) : (
-      <Badge className="bg-destructive text-destructive-foreground">OUT</Badge>
+  const saveEditingName = async () => {
+    if (editingMemberId && editingName.trim()) {
+      const name = editingName.startsWith("OT ") 
+        ? editingName 
+        : `OT ${editingName}`;
+        
+      const updatedMembers = crewMembers.map(member =>
+        member.id === editingMemberId
+          ? { ...member, name: name }
+          : member
+      ).sort((a, b) => {
+        const nameA = a.name.replace(/^OT\s*/, "").trim();
+        const nameB = b.name.replace(/^OT\s*/, "").trim();
+        return nameA.localeCompare(nameB);
+      });
+      
+      setCrewMembers(updatedMembers);
+      setEditingMemberId(null);
+      setEditingName("");
+      await saveCrewMembers(updatedMembers);
+    }
+  };
+
+  const cancelEditingName = () => {
+    setEditingMemberId(null);
+    setEditingName("");
+  };
+
+  const handleStatusToggle = (memberId: string, currentStatus: boolean) => {
+    if (!currentStatus) {
+      // Going from Out to In - no dialog needed
+      updateMemberStatus(memberId, true, "", "");
+    } else {
+      // Going from In to Out - need location/notes
+      setPendingStatusMember(memberId);
+      setStatusNotes("");
+      setStatusLocation("");
+      setShowStatusDialog(true);
+    }
+  };
+
+  const updateMemberStatus = async (
+    memberId: string,
+    isIn: boolean,
+    location: string = "",
+    notes: string = ""
+  ) => {
+    const updatedMembers = crewMembers.map(member =>
+      member.id === memberId
+        ? {
+            ...member,
+            isIn,
+            location,
+            notes,
+            lastUpdate: new Date().toISOString(),
+          }
+        : member
     );
+    setCrewMembers(updatedMembers);
+    await saveCrewMembers(updatedMembers);
   };
 
-  const inCount = crewMembers.filter((member) => member.status === "in").length;
-  const outCount = crewMembers.filter(
-    (member) => member.status === "out",
-  ).length;
+  const handleStatusDialogSubmit = () => {
+    if (pendingStatusMember && statusLocation.trim()) {
+      updateMemberStatus(pendingStatusMember, false, statusLocation, statusNotes);
+      setShowStatusDialog(false);
+      setPendingStatusMember(null);
+      setStatusNotes("");
+      setStatusLocation("");
+    }
+  };
 
-  // Show loading spinner
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const getStatusDisplay = (member: CrewMember) => {
+    const time = formatTime(member.lastUpdate);
+    if (member.isIn) {
+      return `In • ${time}`;
+    } else {
+      return `Out • ${member.location} • ${time}`;
+    }
+  };
+
   if (loading) {
     return (
-      <div className="h-screen bg-white flex flex-col">
-        {/* Top Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-
-        {/* Loading Content */}
-        <div className="flex-1 flex items-center justify-center px-4 py-8">
-          <div className="text-center space-y-4">
-            <div className="h-8 w-8 border-2 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-gray-600">Loading crew status...</p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading crew status...</p>
         </div>
-
-        {/* Bottom Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
       </div>
     );
   }
 
-  // Show login screen if no user selected (unless flight lead)
-  if ((!currentUser && userRole !== "lead") || !userRole) {
-    const presentCount = crewMembers.filter(
-      (member) => member.status === "in",
-    ).length;
-    const totalCount = crewMembers.length;
-    const presentPercentage =
-      totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
-
-    const getStatusMessage = () => {
-      if (presentPercentage === 100) return "✨ Kawaii! All present! ✨";
-      if (presentPercentage >= 80) return "🌟 Almost everyone's here!";
-      if (presentPercentage >= 60) return "👥 Most crew present";
-      if (presentPercentage >= 40) return "⚠️ Some crew away";
-      return "🚨 Many crew members out";
-    };
-
-    const getStatusColor = () => {
-      if (presentPercentage === 100) return "from-green-400 to-green-600";
-      if (presentPercentage >= 80) return "from-green-300 to-green-500";
-      if (presentPercentage >= 60) return "from-yellow-300 to-yellow-500";
-      if (presentPercentage >= 40) return "from-orange-300 to-orange-500";
-      return "from-red-300 to-red-500";
-    };
-
+  if (!currentUser) {
     return (
-      <div className="h-screen bg-white flex flex-col">
-        {/* Top Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-
-        {/* Middle Section - Login Form */}
-        <div className="flex-1 flex items-center justify-center px-4 py-8">
-          <div className="w-full max-w-md space-y-6 md:space-y-8">
-            {/* Header */}
-            <div className="text-center">
-              <h2 className="text-2xl md:text-3xl font-medium text-gray-600 mb-2">
-                OTS FLIGHT 15
-              </h2>
-              <h3 className="text-lg md:text-xl font-medium text-gray-500 mb-6 md:mb-8">
-                STATUS LIVE TRACKER
-              </h3>
-              <p className="text-sm text-gray-500 mb-6 md:mb-8">
-                Select your access level to begin
-              </p>
-            </div>
-
-            {/* Status Overview */}
-            <div className="border border-gray-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-600">
-                  {getStatusMessage()}
-                </span>
-                <span className="text-sm text-gray-500">
-                  {presentPercentage}%
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full bg-gradient-to-r ${getStatusColor()} transition-all duration-300`}
-                  style={{ width: `${presentPercentage}%` }}
-                ></div>
-              </div>
-            </div>
-
-            {/* Flight Lead Button */}
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log("Flight Lead button clicked");
-                setShowPasswordDialog(true);
-              }}
-              className="w-full h-12 bg-blue-900 hover:bg-blue-800 text-white font-medium text-base"
-              variant="default"
-            >
-              Flight Lead Access
-            </Button>
-
-            {/* Crew Member Selection */}
-            <div className="space-y-4">
-              <p className="text-sm font-medium text-gray-600 text-center">
-                Or select your name:
-              </p>
-              <div className="space-y-2">
-                {crewMembers
-                  .sort((a, b) => {
-                    // Sort by first name (the part after "OT ")
-                    const firstNameA = a.name.split(" ")[0].toLowerCase();
-                    const firstNameB = b.name.split(" ")[0].toLowerCase();
-                    return firstNameA.localeCompare(firstNameB);
-                  })
-                  .map((member) => (
-                    <Button
-                      key={member.id}
-                      variant="outline"
-                      className="w-full justify-between px-4 py-3 h-auto border-gray-200 hover:bg-gray-50 text-left"
-                      onClick={() => {
-                        setCurrentUser(member.name);
-                        setUserRole("crew");
-                      }}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 border border-gray-200 rounded-full flex items-center justify-center">
-                          <User className="w-4 h-4 text-gray-500" />
-                        </div>
-                        <span className="font-medium text-gray-700">
-                          OT {member.name}
-                        </span>
-                      </div>
-                      <div className="text-right text-xs">
-                        {member.status === "out" ? (
-                          <span className="px-2 py-1 rounded-full font-medium bg-red-100 text-red-700">
-                            OUT @ {formatTime(member.timestamp)}
-                            {member.note && ` • ${member.note}`}
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-700">
-                            IN
-                          </span>
-                        )}
-                      </div>
-                    </Button>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Blue Banner */}
-        <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-
-        {/* Password Dialog - Available on login screen */}
-        <Dialog
-          open={showPasswordDialog}
-          onOpenChange={(open) => {
-            console.log("Password dialog state changing to:", open);
-            setShowPasswordDialog(open);
-          }}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Flight Lead Authentication</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Enter the flight lead password to access the dashboard:
-              </p>
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleFlightLeadLogin()}
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-slate-100 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center pb-2">
+            <div className="flex flex-col items-center space-y-4">
+              <img
+                src="https://builder.io/api/v1/image/assets%2F79cc5a94c2b54dff8b956b850b45e84f%2Facc6ea8dacea44a4b45a09b33c5f36c3"
+                alt="Air Force Logo"
+                className="w-20 h-20 object-contain"
               />
-              <div className="flex space-x-2">
-                <Button onClick={handleFlightLeadLogin} className="flex-1">
-                  Access Dashboard
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowPasswordDialog(false);
-                    setPasswordInput("");
-                  }}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-blue-700">
+                  WELCOME BACK US AIR FORCE
+                </h1>
+                <p className="text-sm text-gray-600 mt-1">
+                  STATUS LIVE TRACKER
+                </p>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-center space-y-2">
+              <div className="bg-blue-50 rounded-lg p-4">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-2xl font-bold text-green-600">
+                      {crewMembers.filter((m) => m.isIn).length}
+                    </p>
+                    <p className="text-sm font-medium text-green-700">In</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-red-600">
+                      {crewMembers.filter((m) => !m.isIn).length}
+                    </p>
+                    <p className="text-sm font-medium text-red-700">Out</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {crewMembers.length}
+                    </p>
+                    <p className="text-sm font-medium text-blue-700">
+                      Total Crew
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="user-select">Select Your Name:</Label>
+              <select
+                id="user-select"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                onChange={(e) => {
+                  setCurrentUser(e.target.value);
+                  setUserRole("crew");
+                }}
+                value=""
+              >
+                <option value="">Choose your name...</option>
+                {crewMembers.map((member) => (
+                  <option key={member.id} value={member.name}>
+                    {member.name}
+                  </option>
+                ))}
+              </select>
+
+              <Dialog
+                open={showPasswordDialog}
+                onOpenChange={setShowPasswordDialog}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Flight Lead Access
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Flight Lead Access</DialogTitle>
+                    <DialogDescription>
+                      Enter the flight lead password to manage crew members.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="password">Password</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && handlePasswordSubmit()
+                        }
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handlePasswordSubmit}>Access</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="h-screen bg-white flex flex-col">
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
-          {/* Back Button */}
-          <div className="flex justify-start">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setCurrentUser(null);
-                setUserRole(null);
-              }}
-              className="gap-2 text-gray-600 hover:text-gray-800"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-slate-100">
+      <div className="container mx-auto px-4 py-6 max-w-4xl">
+        <div className="text-center mb-6">
+          <div className="flex flex-col items-center space-y-4">
+            <img
+              src="https://builder.io/api/v1/image/assets%2F79cc5a94c2b54dff8b956b850b45e84f%2Facc6ea8dacea44a4b45a09b33c5f36c3"
+              alt="Air Force Logo"
+              className="w-16 h-16 object-contain"
+            />
+            <div>
+              <h1 className="text-2xl font-bold text-blue-700">
+                WELCOME BACK US AIR FORCE
+              </h1>
+              <p className="text-sm text-gray-600 mt-1">STATUS LIVE TRACKER</p>
+            </div>
           </div>
+        </div>
 
-          {/* Header */}
-          <div className="text-center space-y-4 p-6">
-            <div className="flex flex-col items-center space-y-3">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
-                alt="Air Force Logo"
-                className="w-12 h-12 mb-2"
-              />
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-800 mb-1">
-                  U.S. AIR FORCE
-                </h1>
-                <h2 className="text-lg font-semibold text-gray-700">
-                  OTS FLIGHT 15
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  STATUS LIVE TRACKER
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl">OTS FLIGHT 15 - Status Dashboard</CardTitle>
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">
+                  Logged in as: <span className="font-medium">{currentUser}</span> ({userRole})
                 </p>
-                <p className="text-xs text-gray-500 mt-2">
-                  Real-time crew location tracking
-                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setCurrentUser(null);
+                    setUserRole(null);
+                  }}
+                >
+                  Switch User
+                </Button>
               </div>
-            </div>
-            <div className="flex items-center justify-center space-x-4 text-sm">
-              <Badge variant="outline">
-                {userRole === "lead"
-                  ? "Flight Lead"
-                  : `Logged in as: OT ${currentUser}`}
-              </Badge>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setCurrentUser(null);
-                  setUserRole(null);
-                }}
-              >
-                Switch User
-              </Button>
-            </div>
-          </div>
-
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
-              <CardContent className="p-6 flex items-center space-x-4">
-                <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center">
-                  <Users className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-primary">
-                    {crewMembers.length}
-                  </p>
-                  <p className="text-sm font-medium text-blue-700">
-                    Total Crew
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
-              <CardContent className="p-6 flex items-center space-x-4">
-                <div className="h-12 w-12 bg-green-500 rounded-xl flex items-center justify-center">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-green-600">{inCount}</p>
-                  <p className="text-sm font-medium text-green-700">Present</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-red-100">
-              <CardContent className="p-6 flex items-center space-x-4">
-                <div className="h-12 w-12 bg-red-500 rounded-xl flex items-center justify-center">
-                  <MapPin className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-3xl font-bold text-red-600">{outCount}</p>
-                  <p className="text-sm font-medium text-red-700">Away</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Crew Management */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100">
-              <CardTitle className="flex items-center justify-between">
-                <span>
-                  {userRole === "lead" ? "Crew Members" : "Your Status"}
-                </span>
-                {userRole === "lead" && (
-                  <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-                    <DialogTrigger asChild>
-                      <Button className="gap-2">
-                        <Plus className="h-4 w-4" />
-                        Add Member
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add New Crew Member</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <Input
-                          placeholder="Enter crew member name"
-                          value={newMemberName}
-                          onChange={(e) => setNewMemberName(e.target.value)}
-                          onKeyPress={(e) =>
-                            e.key === "Enter" && addCrewMember()
-                          }
-                        />
-                        <Button onClick={addCrewMember} className="w-full">
-                          Add Member
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {crewMembers
-                .filter(
-                  (member) =>
-                    userRole === "lead" || member.name === currentUser,
-                )
-                .sort((a, b) => {
-                  // Sort by first name (the part after "OT ")
-                  const firstNameA = a.name.split(" ")[0].toLowerCase();
-                  const firstNameB = b.name.split(" ")[0].toLowerCase();
-                  return firstNameA.localeCompare(firstNameB);
-                })
-                .map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow bg-white"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-gray-500" />
+            <CardContent>
+              <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-2xl font-bold text-green-600">
+                      {crewMembers.filter((m) => m.isIn).length}
+                    </p>
+                    <p className="text-sm font-medium text-green-700">In</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-red-600">
+                      {crewMembers.filter((m) => !m.isIn).length}
+                    </p>
+                    <p className="text-sm font-medium text-red-700">Out</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {crewMembers.length}
+                    </p>
+                    <p className="text-sm font-medium text-blue-700">Total Crew</p>
+                  </div>
+                </div>
+              </div>
+
+              {userRole === "lead" && (
+                <div className="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <h3 className="font-semibold text-yellow-800 mb-3">Flight Lead Controls</h3>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter crew member name"
+                      value={newMemberName}
+                      onChange={(e) => setNewMemberName(e.target.value)}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && addCrewMember()
+                      }
+                    />
+                    <Button onClick={addCrewMember} className="flex items-center gap-2">
+                      <UserPlus className="h-4 w-4" />
+                      Add
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-3">
+                {crewMembers
+                  .filter(
+                    (member) =>
+                      userRole === "lead" || member.name === currentUser,
+                  )
+                  .map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-1">
+                          {userRole === "lead" &&
+                          editingMemberId === member.id ? (
+                            <div className="flex items-center gap-2">
+                              <Input
+                                value={editingName}
+                                onChange={(e) => setEditingName(e.target.value)}
+                                className="w-40"
+                                onKeyPress={(e) => {
+                                  if (e.key === "Enter") saveEditingName();
+                                  if (e.key === "Escape") cancelEditingName();
+                                }}
+                              />
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={saveEditingName}
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={cancelEditingName}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold text-gray-900">
+                                {member.name}
+                              </h3>
+                              {userRole === "lead" && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => startEditingName(member)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          )}
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge
+                              variant={member.isIn ? "default" : "destructive"}
+                              className="text-xs"
+                            >
+                              {getStatusDisplay(member)}
+                            </Badge>
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        {userRole === "lead" &&
-                        editingMemberId === member.id ? (
-                          <div className="flex items-center space-x-2">
-                            <span className="font-medium">OT</span>
-                            <Input
-                              value={editNameInput}
-                              onChange={(e) => setEditNameInput(e.target.value)}
-                              onKeyPress={(e) => {
-                                if (e.key === "Enter") {
-                                  updateMemberName(member.id, editNameInput);
-                                } else if (e.key === "Escape") {
-                                  setEditingMemberId(null);
-                                  setEditNameInput("");
-                                }
-                              }}
-                              onBlur={() =>
-                                updateMemberName(member.id, editNameInput)
-                              }
-                              className="font-medium h-6 w-32"
-                              autoFocus
-                            />
-                          </div>
-                        ) : (
-                          <div className="space-y-1">
-                            <p
-                              className={`font-medium text-lg ${userRole === "lead" ? "cursor-pointer hover:text-primary transition-colors" : ""}`}
-                              onClick={() =>
-                                userRole === "lead" && startEditingName(member)
-                              }
-                              title={
-                                userRole === "lead" ? "Click to edit name" : ""
-                              }
-                            >
-                              OT {member.name}
-                            </p>
-                            <p
-                              className={`text-sm font-medium ${
-                                member.status === "out"
-                                  ? "text-red-600"
-                                  : "text-green-600"
-                              }`}
-                            >
-                              {member.status === "out"
-                                ? `out at ${formatTime(member.timestamp)} ${member.note ? `at ${member.note}` : ""}`
-                                : "present"}
-                            </p>
-                          </div>
+
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-muted-foreground">
+                            Out
+                          </span>
+                          <Switch
+                            checked={member.isIn}
+                            onCheckedChange={() =>
+                              handleStatusToggle(member.id, member.isIn)
+                            }
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            In
+                          </span>
+                        </div>
+
+                        {userRole === "lead" && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeMember(member.id)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         )}
                       </div>
                     </div>
-
-                    <div className="flex items-center space-x-4">
-                      {getStatusBadge(member.status)}
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">
-                          Out
-                        </span>
-                        <Switch
-                          checked={member.status === "in"}
-                          onCheckedChange={(checked) =>
-                            toggleStatus(member.id, checked)
-                          }
-                          className="data-[state=checked]:bg-success data-[state=unchecked]:bg-destructive"
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          In
-                        </span>
-                      </div>
-                      {userRole === "lead" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeMember(member.id)}
-                          className="text-muted-foreground hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Note Dialog */}
-          <Dialog
-            open={!!noteDialogMember}
-            onOpenChange={() => setNoteDialogMember(null)}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Where are you going?</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <Textarea
-                  placeholder="e.g., Pre-flight inspection, Lunch break, Training..."
-                  value={noteText}
-                  onChange={(e) => setNoteText(e.target.value)}
+        <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Going Out</DialogTitle>
+              <DialogDescription>
+                Please provide your location and any additional notes.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="location">Location *</Label>
+                <Input
+                  id="location"
+                  value={statusLocation}
+                  onChange={(e) => setStatusLocation(e.target.value)}
+                  placeholder="Where are you going?"
                 />
-                <div className="flex space-x-2">
-                  <Button onClick={confirmStatusWithNote} className="flex-1">
-                    Mark Out
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setNoteDialogMember(null);
-                      setNoteText("");
-                    }}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
               </div>
-            </DialogContent>
-          </Dialog>
+              <div>
+                <Label htmlFor="notes">Notes (optional)</Label>
+                <Textarea
+                  id="notes"
+                  value={statusNotes}
+                  onChange={(e) => setStatusNotes(e.target.value)}
+                  placeholder="Any additional information..."
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowStatusDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleStatusDialogSubmit}
+                disabled={!statusLocation.trim()}
+              >
+                Update Status
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <div className="text-center mt-8 text-xs text-gray-500">
+          Copyright 2025 OT Moser
         </div>
       </div>
     </div>
