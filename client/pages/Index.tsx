@@ -151,22 +151,40 @@ export default function Index() {
     }
   };
 
-  const confirmStatusWithNote = () => {
+  const confirmStatusWithNote = async () => {
     if (noteDialogMember) {
-      setCrewMembers((members) =>
-        members.map((member) =>
-          member.id === noteDialogMember
-            ? {
-                ...member,
-                status: "out",
-                note: noteText,
-                timestamp: new Date(),
-              }
-            : member,
-        ),
-      );
-      setNoteDialogMember(null);
-      setNoteText("");
+      try {
+        const response = await fetch(`${API_BASE_URL}/crew.php`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: noteDialogMember,
+            status: "out",
+            note: noteText
+          }),
+        });
+
+        if (response.ok) {
+          setCrewMembers((members) =>
+            members.map((member) =>
+              member.id === noteDialogMember
+                ? {
+                    ...member,
+                    status: "out",
+                    note: noteText,
+                    timestamp: new Date(),
+                  }
+                : member,
+            ),
+          );
+          setNoteDialogMember(null);
+          setNoteText("");
+        }
+      } catch (error) {
+        console.error('Failed to update status with note:', error);
+      }
     }
   };
 
