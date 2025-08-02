@@ -83,7 +83,9 @@ export default function Index() {
         await store.setJSON("crew-members", members);
         console.log("✅ Crew data saved to Netlify Blobs successfully");
       } else {
-        console.warn("⚠️ Netlify Blobs not available - saving to localStorage as fallback");
+        console.warn(
+          "⚠️ Netlify Blobs not available - saving to localStorage as fallback",
+        );
         localStorage.setItem("crew-members-fallback", JSON.stringify(members));
       }
     } catch (error) {
