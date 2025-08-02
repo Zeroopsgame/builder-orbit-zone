@@ -90,7 +90,7 @@ export default function Index() {
 
     // Fallback to API-based shared storage for multi-device sync
     try {
-      console.log("🔄 Attempting to save to API:", `${API_BASE_URL}/crew.php`);
+      console.log("��� Attempting to save to API:", `${API_BASE_URL}/crew.php`);
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
@@ -146,16 +146,17 @@ export default function Index() {
 
   const fetchCrewMembers = async () => {
     // Force clear ALL localStorage data on every load
-    console.log("🧹 Clearing all localStorage data to force shared storage");
+    console.log("🧹 Clearing all localStorage data - ONLY using Netlify Blobs");
     localStorage.removeItem("crew-members-fallback");
     localStorage.removeItem("crew-members");
     localStorage.removeItem("crew-status");
+    localStorage.removeItem("crew-members-temp");
 
-    // ONLY try shared storage (Netlify Blobs or API)
+    // ONLY try Netlify Blobs - NO other storage
     try {
       const store = getCrewStore();
       if (store) {
-        // Try to load from Netlify Blobs first
+        console.log("🔄 Loading from Netlify Blobs...");
         const storedData = await store.get("crew-members", { type: "json" });
         if (storedData && storedData.length > 0) {
           const formattedData = storedData.map((member: any) => ({
@@ -163,85 +164,25 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log("✅ Loaded crew data from Netlify Blobs");
-          setLoading(false);
-          return;
-        }
-      }
-    } catch (error) {
-      console.log("Netlify Blobs not available, trying API");
-    }
-
-    // Try API-based shared storage for multi-device sync
-    try {
-      console.log(
-        "🔄 Attempting to fetch from API:",
-        `${API_BASE_URL}/crew.php?action=get_all`,
-      );
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-
-      const response = await fetch(`${API_BASE_URL}/crew.php?action=get_all`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        const apiData = await response.json();
-        if (apiData && apiData.length > 0) {
-          const formattedData = apiData.map((member: any) => ({
-            ...member,
-            timestamp: new Date(member.timestamp),
-          }));
-          setCrewMembers(formattedData);
-          console.log("✅ Loaded crew data from shared API storage");
+          console.log("�� Loaded crew data from Netlify Blobs successfully!");
           setLoading(false);
           return;
         } else {
-          console.log("⚠️ API returned empty data");
+          console.log("⚠️ Netlify Blobs is empty - using sample data to initialize");
         }
       } else {
-        console.log(
-          "⚠️ API returned error status:",
-          response.status,
-          response.statusText,
-        );
-      }
-    } catch (apiError) {
-      if (apiError.name === "AbortError") {
-        console.log("⚠️ API request timed out after 5 seconds");
-      } else {
-        console.log("❌ API failed:", apiError.message || apiError);
-      }
-    }
-
-    // Temporary localStorage fallback for testing (single-device only)
-    try {
-      const fallbackData = localStorage.getItem("crew-members-temp");
-      if (fallbackData) {
-        const parsedData = JSON.parse(fallbackData);
-        const formattedData = parsedData.map((member: any) => ({
-          ...member,
-          timestamp: new Date(member.timestamp),
-        }));
-        setCrewMembers(formattedData);
-        console.log("📱 Using temporary localStorage for testing (single-device only)");
-        setLoading(false);
-        return;
+        console.log("❌ Netlify Blobs NOT AVAILABLE");
+        console.log("🚨 You are NOT deployed on Netlify!");
+        console.log("🔄 Deploy to Netlify for Netlify Blobs to work");
       }
     } catch (error) {
-      console.log("❌ localStorage test failed");
+      console.log("❌ Netlify Blobs failed:", error);
+      console.log("🚨 You are NOT deployed on Netlify!");
+      console.log("🔄 Deploy to Netlify for Netlify Blobs to work");
     }
 
-    // Use sample data if nothing else works
-    console.log("⚠️ No shared storage available - using sample data");
-    console.log("🔄 Deploy to Netlify or fix API for proper multi-device sync");
+    // Only use sample data if Netlify Blobs isn't available
+    console.log("📋 Using sample data - deploy to Netlify for persistence");
 
     // Fallback to sample data if no stored data exists
     const sampleData = [
