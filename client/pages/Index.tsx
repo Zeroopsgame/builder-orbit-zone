@@ -306,50 +306,17 @@ export default function Index() {
   const updateMemberName = async (id: string, newName: string) => {
     if (!newName.trim()) return;
 
-    // In development mode, use local state directly
-    if (isDevelopment) {
-      setCrewMembers((members) =>
-        members.map((member) =>
-          member.id === id ? { ...member, name: newName.trim() } : member,
-        ),
-      );
-      setEditingMemberId(null);
-      setEditNameInput("");
-      return;
-    }
+    const updatedMembers = crewMembers.map((member) =>
+      member.id === id ? { ...member, name: newName.trim() } : member,
+    );
 
-    // In production mode, would use API call
-    try {
-      const response = await fetch(`${API_BASE_URL}/crew.php`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, name: newName.trim() }),
-      });
+    setCrewMembers(updatedMembers);
 
-      if (response.ok) {
-        setCrewMembers((members) =>
-          members.map((member) =>
-            member.id === id ? { ...member, name: newName.trim() } : member,
-          ),
-        );
-        setEditingMemberId(null);
-        setEditNameInput("");
-      } else {
-        throw new Error("API not available");
-      }
-    } catch (error) {
-      console.log("Development mode: using local state (API not available)");
-      // Fallback to local state
-      setCrewMembers((members) =>
-        members.map((member) =>
-          member.id === id ? { ...member, name: newName.trim() } : member,
-        ),
-      );
-      setEditingMemberId(null);
-      setEditNameInput("");
-    }
+    // Save to Netlify Blobs for multi-user persistence
+    await saveCrewMembers(updatedMembers);
+
+    setEditingMemberId(null);
+    setEditNameInput("");
   };
 
   const startEditingName = (member: CrewMember) => {
