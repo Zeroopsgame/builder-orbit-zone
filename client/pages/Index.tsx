@@ -499,7 +499,7 @@ export default function Index() {
                   <Button
                     key={member.id}
                     variant="outline"
-                    className="w-full justify-start"
+                    className="w-full justify-start h-auto py-3"
                     onClick={() => {
                       setCurrentUser(member.name);
                       setUserRole("crew");
