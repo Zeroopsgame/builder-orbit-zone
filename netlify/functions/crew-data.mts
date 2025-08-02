@@ -2,8 +2,12 @@ import { getStore } from '@netlify/blobs';
 import type { Context, Config } from "@netlify/functions";
 
 export default async (req: Request, context: Context) => {
+  console.log('🔍 Function called with method:', req.method);
+  console.log('🔍 Request URL:', req.url);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
+    console.log('✅ Handling CORS preflight');
     return new Response('', {
       status: 200,
       headers: {
