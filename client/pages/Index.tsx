@@ -631,6 +631,42 @@ export default function Index() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Password Dialog */}
+        <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Flight Lead Authentication</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Enter the flight lead password to access the dashboard:
+              </p>
+              <Input
+                type="password"
+                placeholder="Enter password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleFlightLeadLogin()}
+              />
+              <div className="flex space-x-2">
+                <Button onClick={handleFlightLeadLogin} className="flex-1">
+                  Access Dashboard
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowPasswordDialog(false);
+                    setPasswordInput("");
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
