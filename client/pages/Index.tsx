@@ -236,9 +236,26 @@ export default function Index() {
           );
           setNoteDialogMember(null);
           setNoteText("");
+        } else {
+          throw new Error('API not available');
         }
       } catch (error) {
-        console.error('Failed to update status with note:', error);
+        console.error('API not available, using local state:', error);
+        // Fallback to local state
+        setCrewMembers((members) =>
+          members.map((member) =>
+            member.id === noteDialogMember
+              ? {
+                  ...member,
+                  status: "out",
+                  note: noteText,
+                  timestamp: new Date(),
+                }
+              : member,
+          ),
+        );
+        setNoteDialogMember(null);
+        setNoteText("");
       }
     }
   };
