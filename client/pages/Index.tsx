@@ -340,7 +340,7 @@ export default function Index() {
   // Show loading spinner
   if (loading) {
     return (
-      <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 p-4 md:p-6 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="text-muted-foreground">Loading crew status...</p>
