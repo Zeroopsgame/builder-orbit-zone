@@ -127,8 +127,12 @@ export default function Index() {
         console.log("⚠️ API save failed:", apiError.message || apiError);
       }
 
-      console.log("❌ No shared storage available - changes will not be saved!");
-      console.log("🔄 Deploy to Netlify or fix API for proper multi-device sync");
+      console.log(
+        "❌ No shared storage available - changes will not be saved!",
+      );
+      console.log(
+        "🔄 Deploy to Netlify or fix API for proper multi-device sync",
+      );
     }
   };
 
