@@ -113,11 +113,15 @@ export default function Index() {
         console.log("✅ Crew data saved to shared API storage");
         return;
       } else {
-        console.log("⚠️ API save returned error status:", response.status, response.statusText);
+        console.log(
+          "⚠️ API save returned error status:",
+          response.status,
+          response.statusText,
+        );
         throw new Error(`API save failed: ${response.status}`);
       }
     } catch (apiError) {
-      if (apiError.name === 'AbortError') {
+      if (apiError.name === "AbortError") {
         console.log("⚠️ API save request timed out after 5 seconds");
       } else {
         console.log("⚠️ API save failed:", apiError.message || apiError);
@@ -148,7 +152,9 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log("✅ Loaded crew data from Netlify Blobs - clearing old localStorage");
+          console.log(
+            "✅ Loaded crew data from Netlify Blobs - clearing old localStorage",
+          );
           // Clear old localStorage since we have shared data
           localStorage.removeItem("crew-members-fallback");
           hasSharedData = true;
@@ -162,7 +168,10 @@ export default function Index() {
 
     // Try API-based shared storage for multi-device sync
     try {
-      console.log("🔄 Attempting to fetch from API:", `${API_BASE_URL}/crew.php?action=get_all`);
+      console.log(
+        "🔄 Attempting to fetch from API:",
+        `${API_BASE_URL}/crew.php?action=get_all`,
+      );
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
@@ -185,7 +194,9 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log("✅ Loaded crew data from shared API storage - clearing old localStorage");
+          console.log(
+            "✅ Loaded crew data from shared API storage - clearing old localStorage",
+          );
           // Clear old localStorage since we have shared data
           localStorage.removeItem("crew-members-fallback");
           hasSharedData = true;
@@ -195,10 +206,14 @@ export default function Index() {
           console.log("⚠️ API returned empty data");
         }
       } else {
-        console.log("⚠️ API returned error status:", response.status, response.statusText);
+        console.log(
+          "⚠️ API returned error status:",
+          response.status,
+          response.statusText,
+        );
       }
     } catch (apiError) {
-      if (apiError.name === 'AbortError') {
+      if (apiError.name === "AbortError") {
         console.log("⚠️ API request timed out after 5 seconds");
       } else {
         console.log("❌ API failed:", apiError.message || apiError);
@@ -216,7 +231,9 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log("⚠️ Using localStorage (device-only) - shared storage unavailable");
+          console.log(
+            "⚠️ Using localStorage (device-only) - shared storage unavailable",
+          );
           setLoading(false);
           return;
         }
