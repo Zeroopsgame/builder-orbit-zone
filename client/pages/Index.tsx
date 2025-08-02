@@ -340,10 +340,27 @@ export default function Index() {
   // Show loading spinner
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 p-4 md:p-6 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-muted-foreground">Loading crew status...</p>
+      <div className="h-screen bg-white flex flex-col">
+        {/* Top Section - Air Force Branding */}
+        <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-8 md:py-12">
+          <div className="absolute inset-0 bg-black opacity-40"></div>
+          <div className="relative z-10 flex flex-col justify-center items-center text-white px-4">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
+              alt="Air Force Logo"
+              className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6"
+            />
+            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">WELCOME BACK</h1>
+            <p className="text-lg md:text-xl text-slate-300">U.S. AIR FORCE</p>
+          </div>
+        </div>
+
+        {/* Loading Content */}
+        <div className="flex-1 flex items-center justify-center px-4 py-8">
+          <div className="text-center space-y-4">
+            <div className="h-8 w-8 border-2 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="text-gray-600">Loading crew status...</p>
+          </div>
         </div>
       </div>
     );
