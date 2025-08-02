@@ -162,7 +162,7 @@ export default function Index() {
           throw new Error('API not available');
         }
       } catch (error) {
-        console.error('API not available, using local state:', error);
+        console.log('Development mode: using local state (API not available)');
         // Fallback to local state when API is not available
         const newMember: CrewMember = {
           id: Date.now().toString(),
@@ -203,7 +203,7 @@ export default function Index() {
         throw new Error('API not available');
       }
     } catch (error) {
-      console.error('API not available, using local state:', error);
+      console.log('Development mode: using local state (API not available)');
       // Fallback to local state
       setCrewMembers((members) => members.filter((member) => member.id !== id));
     }
@@ -249,7 +249,7 @@ export default function Index() {
         throw new Error('API not available');
       }
     } catch (error) {
-      console.error('API not available, using local state:', error);
+      console.log('Development mode: using local state (API not available)');
       // Fallback to local state
       setCrewMembers((members) =>
         members.map((member) =>
@@ -300,7 +300,7 @@ export default function Index() {
           throw new Error('API not available');
         }
       } catch (error) {
-        console.error('API not available, using local state:', error);
+        console.log('Development mode: using local state (API not available)');
         // Fallback to local state
         setCrewMembers((members) =>
           members.map((member) =>
@@ -373,7 +373,7 @@ export default function Index() {
         throw new Error('API not available');
       }
     } catch (error) {
-      console.error('API not available, using local state:', error);
+      console.log('Development mode: using local state (API not available)');
       // Fallback to local state
       setCrewMembers((members) =>
         members.map((member) =>
