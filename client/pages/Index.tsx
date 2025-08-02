@@ -133,9 +133,13 @@ export default function Index() {
   };
 
   const fetchCrewMembers = async () => {
-    let hasSharedData = false;
+    // Force clear ALL localStorage data on every load
+    console.log("🧹 Clearing all localStorage data to force shared storage");
+    localStorage.removeItem("crew-members-fallback");
+    localStorage.removeItem("crew-members");
+    localStorage.removeItem("crew-status");
 
-    // Always try shared storage first (Netlify Blobs or API)
+    // ONLY try shared storage (Netlify Blobs or API)
     try {
       const store = getCrewStore();
       if (store) {
@@ -147,12 +151,7 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log(
-            "✅ Loaded crew data from Netlify Blobs - clearing old localStorage",
-          );
-          // Clear old localStorage since we have shared data
-          localStorage.removeItem("crew-members-fallback");
-          hasSharedData = true;
+          console.log("✅ Loaded crew data from Netlify Blobs");
           setLoading(false);
           return;
         }
@@ -189,12 +188,7 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log(
-            "✅ Loaded crew data from shared API storage - clearing old localStorage",
-          );
-          // Clear old localStorage since we have shared data
-          localStorage.removeItem("crew-members-fallback");
-          hasSharedData = true;
+          console.log("✅ Loaded crew data from shared API storage");
           setLoading(false);
           return;
         } else {
@@ -215,27 +209,9 @@ export default function Index() {
       }
     }
 
-    // Only use localStorage if NO shared storage is available
-    if (!hasSharedData) {
-      try {
-        const fallbackData = localStorage.getItem("crew-members-fallback");
-        if (fallbackData) {
-          const parsedData = JSON.parse(fallbackData);
-          const formattedData = parsedData.map((member: any) => ({
-            ...member,
-            timestamp: new Date(member.timestamp),
-          }));
-          setCrewMembers(formattedData);
-          console.log(
-            "⚠️ Using localStorage (device-only) - shared storage unavailable",
-          );
-          setLoading(false);
-          return;
-        }
-      } catch (localError) {
-        console.log("❌ localStorage failed, using sample data");
-      }
-    }
+    // NO localStorage fallback - use sample data if no shared storage available
+    console.log("⚠️ No shared storage available - using sample data");
+    console.log("🔄 Deploy to Netlify or fix API for proper multi-device sync");
 
     // Fallback to sample data if no stored data exists
     const sampleData = [
