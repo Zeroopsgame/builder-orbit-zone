@@ -466,8 +466,8 @@ export default function Index() {
                   </Button>
                 ))}
               </div>
+            </div>
           </div>
-        </div>
 
         {/* Copyright Footer - Sticky at bottom */}
         <footer className="bg-gray-100 border-t border-gray-200 py-4">
