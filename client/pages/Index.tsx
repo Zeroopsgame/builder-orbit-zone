@@ -417,7 +417,7 @@ export default function Index() {
             </div>
 
             {/* Status Overview */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="border border-gray-200 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium text-gray-600">
                   {getStatusMessage()}
