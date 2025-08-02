@@ -177,6 +177,13 @@ export default function Index() {
     // Only flight leads can remove members
     if (userRole !== "lead") return;
 
+    // In development mode, use local state directly
+    if (isDevelopment) {
+      setCrewMembers((members) => members.filter((member) => member.id !== id));
+      return;
+    }
+
+    // In production mode, try API first
     try {
       const response = await fetch(`${API_BASE_URL}/crew.php`, {
         method: 'DELETE',
