@@ -1,0 +1,37 @@
+🚀 QUICK cPanel DEPLOYMENT CHECKLIST
+
+1. CREATE DATABASE:
+   - MySQL Databases → Create "roster" database
+   - Create user, assign to database
+   - Note: name, username, password
+
+2. RUN SQL SCRIPT:
+   - phpMyAdmin → Run the CREATE TABLE script from DEPLOYMENT_GUIDE.md
+
+3. UPLOAD THESE FILES TO public_html/roster/:
+   ✓ dist/spa/index.html
+   ✓ dist/spa/assets/ (entire folder)
+   ✓ .htaccess
+   ✓ api/config.php (EDIT DATABASE DETAILS FIRST!)
+   ✓ api/crew.php
+
+4. EDIT DATABASE CONFIG:
+   - Open api/config.php
+   - Update DB_NAME, DB_USER, DB_PASS
+
+5. TEST:
+   - Visit nerkco.com/roster
+   - Try Flight Lead access
+   - Add/remove crew members
+   - Test status toggles
+
+DONE! 🎯
+
+File Structure Should Look Like:
+public_html/roster/
+├── index.html
+├── assets/
+├── .htaccess
+└── api/
+    ├── config.php
+    └── crew.php
