@@ -443,7 +443,12 @@ export default function Index() {
                       setUserRole("crew");
                     }}
                   >
-                    <span className="font-medium text-gray-700">OT {member.name}</span>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-gray-500" />
+                      </div>
+                      <span className="font-medium text-gray-700">OT {member.name}</span>
+                    </div>
                     <div className="text-right text-xs">
                       {member.status === "out" ? (
                         <span className="px-2 py-1 rounded-full font-medium bg-red-100 text-red-700">
