@@ -399,10 +399,8 @@ export default function Index() {
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
               alt="Air Force Logo"
-              className="w-14 h-14 md:w-16 md:h-16 mb-2 md:mb-3"
+              className="w-14 h-14 md:w-16 md:h-16"
             />
-            <h1 className="text-xl md:text-2xl font-bold mb-1">WELCOME BACK</h1>
-            <p className="text-base md:text-lg text-slate-300">U.S. AIR FORCE</p>
           </div>
         </div>
 
