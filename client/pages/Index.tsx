@@ -242,41 +242,26 @@ export default function Index() {
           }),
         });
 
-        if (response.ok) {
-          setCrewMembers((members) =>
-            members.map((member) =>
-              member.id === noteDialogMember
-                ? {
-                    ...member,
-                    status: "out",
-                    note: noteText,
-                    timestamp: new Date(),
-                  }
-                : member,
-            ),
-          );
-          setNoteDialogMember(null);
-          setNoteText("");
-        } else {
-          throw new Error("API not available");
-        }
-      } catch (error) {
-        console.log("Development mode: using local state (API not available)");
-        // Fallback to local state
-        setCrewMembers((members) =>
-          members.map((member) =>
-            member.id === noteDialogMember
-              ? {
-                  ...member,
-                  status: "out",
-                  note: noteText,
-                  timestamp: new Date(),
-                }
-              : member,
-          ),
+        const updatedMembers = crewMembers.map((member) =>
+          member.id === noteDialogMember
+            ? {
+                ...member,
+                status: "out",
+                note: noteText,
+                timestamp: new Date(),
+              }
+            : member,
         );
+
+        setCrewMembers(updatedMembers);
+
+        // Save to Netlify Blobs for multi-user persistence
+        await saveCrewMembers(updatedMembers);
+
         setNoteDialogMember(null);
         setNoteText("");
+      } catch (error) {
+        console.log("Error updating status:", error);
       }
     }
   };
