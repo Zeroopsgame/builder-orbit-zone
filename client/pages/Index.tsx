@@ -123,7 +123,7 @@ export default function Index() {
     try {
       const store = getCrewStore();
       if (store) {
-        // Try to load from Netlify Blobs
+        // Try to load from Netlify Blobs first
         const storedData = await store.get("crew-members", { type: "json" });
         if (storedData && storedData.length > 0) {
           const formattedData = storedData.map((member: any) => ({
@@ -131,27 +131,57 @@ export default function Index() {
             timestamp: new Date(member.timestamp),
           }));
           setCrewMembers(formattedData);
-          console.log("�� Loaded crew data from Netlify Blobs");
-          setLoading(false);
-          return;
-        }
-      } else {
-        // Try localStorage fallback
-        const fallbackData = localStorage.getItem("crew-members-fallback");
-        if (fallbackData) {
-          const parsedData = JSON.parse(fallbackData);
-          const formattedData = parsedData.map((member: any) => ({
-            ...member,
-            timestamp: new Date(member.timestamp),
-          }));
-          setCrewMembers(formattedData);
-          console.log("💾 Loaded crew data from localStorage fallback");
+          console.log("✅ Loaded crew data from Netlify Blobs");
           setLoading(false);
           return;
         }
       }
     } catch (error) {
-      console.log("❌ Error loading data, using sample data:", error);
+      console.log("Netlify Blobs not available, trying API");
+    }
+
+    // Try API-based shared storage for multi-device sync
+    try {
+      const response = await fetch(`${API_BASE_URL}/crew.php?action=get_all`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const apiData = await response.json();
+        if (apiData && apiData.length > 0) {
+          const formattedData = apiData.map((member: any) => ({
+            ...member,
+            timestamp: new Date(member.timestamp),
+          }));
+          setCrewMembers(formattedData);
+          console.log("✅ Loaded crew data from shared API storage");
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (apiError) {
+      console.log("API not available, trying localStorage");
+    }
+
+    // Try localStorage fallback (device-only)
+    try {
+      const fallbackData = localStorage.getItem("crew-members-fallback");
+      if (fallbackData) {
+        const parsedData = JSON.parse(fallbackData);
+        const formattedData = parsedData.map((member: any) => ({
+          ...member,
+          timestamp: new Date(member.timestamp),
+        }));
+        setCrewMembers(formattedData);
+        console.log("💾 Loaded crew data from localStorage (device-only)");
+        setLoading(false);
+        return;
+      }
+    } catch (localError) {
+      console.log("❌ localStorage failed, using sample data");
     }
 
     // Fallback to sample data if no stored data exists
