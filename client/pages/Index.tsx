@@ -148,12 +148,20 @@ export default function Index() {
 
     // Try API-based shared storage for multi-device sync
     try {
+      console.log("🔄 Attempting to fetch from API:", `${API_BASE_URL}/crew.php?action=get_all`);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
       const response = await fetch(`${API_BASE_URL}/crew.php?action=get_all`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const apiData = await response.json();
@@ -169,10 +177,18 @@ export default function Index() {
           hasSharedData = true;
           setLoading(false);
           return;
+        } else {
+          console.log("⚠️ API returned empty data");
         }
+      } else {
+        console.log("⚠️ API returned error status:", response.status, response.statusText);
       }
     } catch (apiError) {
-      console.log("❌ API failed:", apiError);
+      if (apiError.name === 'AbortError') {
+        console.log("⚠️ API request timed out after 5 seconds");
+      } else {
+        console.log("❌ API failed:", apiError.message || apiError);
+      }
     }
 
     // Only use localStorage if NO shared storage is available
