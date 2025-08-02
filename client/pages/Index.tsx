@@ -377,10 +377,7 @@ export default function Index() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Button
-                onClick={() => {
-                  setUserRole("lead");
-                  setCurrentUser("Flight Lead");
-                }}
+                onClick={() => setShowPasswordDialog(true)}
                 className="w-full"
                 variant="default"
               >
