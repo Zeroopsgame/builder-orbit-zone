@@ -185,9 +185,24 @@ export default function Index() {
               : member,
           ),
         );
+      } else {
+        throw new Error('API not available');
       }
     } catch (error) {
-      console.error('Failed to update status:', error);
+      console.error('API not available, using local state:', error);
+      // Fallback to local state
+      setCrewMembers((members) =>
+        members.map((member) =>
+          member.id === id
+            ? {
+                ...member,
+                status: newStatus,
+                note: undefined,
+                timestamp: new Date(),
+              }
+            : member,
+        ),
+      );
     }
   };
 
