@@ -324,10 +324,10 @@ export default function Index() {
                 className="w-32 h-32 object-contain"
               />
               <div>
-                <h1 className="text-2xl font-bold text-blue-700">
+                <h1 className="text-3xl font-bold text-blue-700 mb-2">
                   OTS FLIGHT 15
                 </h1>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-lg text-blue-600 font-semibold">
                   STATUS TRACKER
                 </p>
               </div>
