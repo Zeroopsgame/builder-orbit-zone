@@ -477,6 +477,20 @@ export default function Index() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Compact Status Bar */}
+            <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-gray-600">{getStatusMessage()}</span>
+                <span className="text-xs text-gray-500">{presentPercentage}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full bg-gradient-to-r ${getStatusColor()} transition-all duration-300`}
+                  style={{ width: `${presentPercentage}%` }}
+                ></div>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Button
                 onClick={(e) => {
