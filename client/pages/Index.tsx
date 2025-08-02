@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Users, Clock, MapPin, Trash2, ArrowLeft } from "lucide-react";
+import { getStore } from "@netlify/blobs";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
