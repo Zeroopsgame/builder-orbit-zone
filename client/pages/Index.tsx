@@ -171,6 +171,7 @@ export default function Index() {
 
   const handlePasswordSubmit = () => {
     if (password === "15") {
+      setCurrentUser("Flight Lead");
       setUserRole("lead");
       setShowPasswordDialog(false);
       setPassword("");
