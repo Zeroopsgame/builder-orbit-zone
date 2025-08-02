@@ -463,7 +463,7 @@ export default function Index() {
                     }}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 border border-gray-200 rounded-full flex items-center justify-center">
                         <User className="w-4 h-4 text-gray-500" />
                       </div>
                       <span className="font-medium text-gray-700">OT {member.name}</span>
