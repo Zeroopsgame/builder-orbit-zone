@@ -28,27 +28,11 @@ interface CrewMember {
 }
 
 export default function Index() {
-  const [crewMembers, setCrewMembers] = useState<CrewMember[]>([
-    {
-      id: "1",
-      name: "John Smith",
-      status: "in",
-      timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 min ago
-    },
-    {
-      id: "2",
-      name: "Sarah Johnson",
-      status: "out",
-      note: "Lunch",
-      timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 min ago
-    },
-    {
-      id: "3",
-      name: "Mike Davis",
-      status: "in",
-      timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 min ago
-    },
-  ]);
+  // UPDATE THIS URL TO MATCH YOUR CPANEL DOMAIN
+  const API_BASE_URL = 'https://nerkco.com/roster/api';
+
+  const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<"crew" | "lead" | null>(null);
