@@ -42,7 +42,9 @@ export default function Index() {
     try {
       return getStore("crew-status");
     } catch (error) {
-      console.log("❌ Netlify Blobs NOT AVAILABLE - You are NOT deployed on Netlify!");
+      console.log(
+        "❌ Netlify Blobs NOT AVAILABLE - You are NOT deployed on Netlify!",
+      );
       return null;
     }
   };
@@ -113,7 +115,9 @@ export default function Index() {
           setLoading(false);
           return;
         } else {
-          console.log("⚠️ Netlify Blobs is empty - using sample data to initialize");
+          console.log(
+            "⚠️ Netlify Blobs is empty - using sample data to initialize",
+          );
         }
       } else {
         console.log("❌ Netlify Blobs NOT AVAILABLE");
@@ -332,7 +336,7 @@ export default function Index() {
         <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-8 md:py-12">
           <div className="absolute inset-0 bg-black opacity-40"></div>
           <div className="relative z-10 flex flex-col justify-center items-center text-white px-4">
-            <img 
+            <img
               src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fada268c851184cf1830e50c8656ea528?format=webp&width=800"
               alt="Air Force Logo"
               className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6"
@@ -343,7 +347,7 @@ export default function Index() {
             <p className="text-lg md:text-xl text-slate-300">U.S. AIR FORCE</p>
           </div>
         </div>
-        
+
         {/* Loading Content */}
         <div className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="text-center space-y-4">
@@ -379,12 +383,12 @@ export default function Index() {
       if (presentPercentage >= 40) return "from-orange-300 to-orange-500";
       return "from-red-300 to-red-500";
     };
-    
+
     return (
       <div className="h-screen bg-white flex flex-col">
         {/* Top Blue Banner */}
         <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-        
+
         {/* Middle Section - Login Form */}
         <div className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="w-full max-w-md space-y-6 md:space-y-8">
@@ -482,7 +486,7 @@ export default function Index() {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Blue Banner */}
         <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
 

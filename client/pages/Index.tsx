@@ -41,15 +41,23 @@ export default function Index() {
   const getCrewStore = () => {
     try {
       // Check if we're in Netlify serverless environment (auto-config)
-      if (typeof window !== 'undefined' && window.location.hostname.includes('netlify.app')) {
-        console.log("🔄 Using Netlify Blobs with auto-config (serverless environment)");
+      if (
+        typeof window !== "undefined" &&
+        window.location.hostname.includes("netlify.app")
+      ) {
+        console.log(
+          "🔄 Using Netlify Blobs with auto-config (serverless environment)",
+        );
         return getStore("crew-status");
       }
-      
+
       // For client-side usage, we need siteID and token (when available)
-      const siteID = process.env.REACT_APP_NETLIFY_SITE_ID || process.env.NETLIFY_SITE_ID;
-      const token = process.env.REACT_APP_NETLIFY_AUTH_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
-      
+      const siteID =
+        process.env.REACT_APP_NETLIFY_SITE_ID || process.env.NETLIFY_SITE_ID;
+      const token =
+        process.env.REACT_APP_NETLIFY_AUTH_TOKEN ||
+        process.env.NETLIFY_AUTH_TOKEN;
+
       if (siteID && token) {
         console.log("🔄 Using Netlify Blobs with manual config (client-side)");
         return getStore({
@@ -58,13 +66,19 @@ export default function Index() {
           token: token,
         });
       } else {
-        console.log("❌ Netlify Blobs: Missing siteID or token for client-side usage");
-        console.log("🔧 Set REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN environment variables");
+        console.log(
+          "❌ Netlify Blobs: Missing siteID or token for client-side usage",
+        );
+        console.log(
+          "🔧 Set REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN environment variables",
+        );
         return null;
       }
     } catch (error) {
       console.log("❌ Netlify Blobs initialization failed:", error);
-      console.log("🚨 Ensure you're deployed on Netlify or have proper environment variables");
+      console.log(
+        "🚨 Ensure you're deployed on Netlify or have proper environment variables",
+      );
       return null;
     }
   };
@@ -101,12 +115,16 @@ export default function Index() {
       } else {
         console.log("❌ Netlify Blobs store NOT AVAILABLE");
         console.log("🚨 Check environment variables or deploy to Netlify");
-        console.log("🔧 Need: REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN");
+        console.log(
+          "🔧 Need: REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN",
+        );
       }
     } catch (error) {
       console.log("❌ Netlify Blobs save failed:", error);
       console.log("🚨 Check your environment configuration");
-      console.log("📖 See: https://docs.netlify.com/build/data-and-storage/netlify-blobs/");
+      console.log(
+        "📖 See: https://docs.netlify.com/build/data-and-storage/netlify-blobs/",
+      );
     }
 
     // NO fallbacks - ONLY Netlify Blobs
@@ -128,7 +146,7 @@ export default function Index() {
         console.log("🔄 Loading from Netlify Blobs using correct API...");
         // Use correct API: get(key, { type: 'json' }) per documentation
         const storedData = await store.get("crew-members", { type: "json" });
-        
+
         if (storedData && Array.isArray(storedData) && storedData.length > 0) {
           const formattedData = storedData.map((member: any) => ({
             ...member,
@@ -140,19 +158,29 @@ export default function Index() {
           setLoading(false);
           return;
         } else if (storedData === null) {
-          console.log("⚠️ Netlify Blobs key 'crew-members' not found - initializing with sample data");
+          console.log(
+            "⚠️ Netlify Blobs key 'crew-members' not found - initializing with sample data",
+          );
         } else {
-          console.log("⚠️ Netlify Blobs returned unexpected data format:", typeof storedData, storedData);
+          console.log(
+            "⚠️ Netlify Blobs returned unexpected data format:",
+            typeof storedData,
+            storedData,
+          );
         }
       } else {
         console.log("❌ Netlify Blobs store NOT AVAILABLE");
         console.log("🚨 Check environment variables or deploy to Netlify");
-        console.log("🔧 Need: REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN");
+        console.log(
+          "🔧 Need: REACT_APP_NETLIFY_SITE_ID and REACT_APP_NETLIFY_AUTH_TOKEN",
+        );
       }
     } catch (error) {
       console.log("❌ Netlify Blobs API call failed:", error);
       console.log("🚨 Check your environment configuration");
-      console.log("📖 See: https://docs.netlify.com/build/data-and-storage/netlify-blobs/");
+      console.log(
+        "📖 See: https://docs.netlify.com/build/data-and-storage/netlify-blobs/",
+      );
     }
 
     // Only use sample data if Netlify Blobs isn't available
@@ -359,7 +387,7 @@ export default function Index() {
       <div className="h-screen bg-white flex flex-col">
         {/* Top Blue Banner */}
         <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-        
+
         {/* Loading Content */}
         <div className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="text-center space-y-4">
@@ -367,7 +395,7 @@ export default function Index() {
             <p className="text-gray-600">Loading crew status...</p>
           </div>
         </div>
-        
+
         {/* Bottom Blue Banner */}
         <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
       </div>
@@ -398,12 +426,12 @@ export default function Index() {
       if (presentPercentage >= 40) return "from-orange-300 to-orange-500";
       return "from-red-300 to-red-500";
     };
-    
+
     return (
       <div className="h-screen bg-white flex flex-col">
         {/* Top Blue Banner */}
         <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
-        
+
         {/* Middle Section - Login Form */}
         <div className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="w-full max-w-md space-y-6 md:space-y-8">
@@ -501,7 +529,7 @@ export default function Index() {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Blue Banner */}
         <div className="bg-blue-900 h-3 w-full flex-shrink-0"></div>
 
@@ -584,7 +612,9 @@ export default function Index() {
                 <h2 className="text-lg font-semibold text-gray-700">
                   OTS FLIGHT 15
                 </h2>
-                <p className="text-sm text-gray-600 mt-1">STATUS LIVE TRACKER</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  STATUS LIVE TRACKER
+                </p>
                 <p className="text-xs text-gray-500 mt-2">
                   Real-time crew location tracking
                 </p>
@@ -620,7 +650,9 @@ export default function Index() {
                   <p className="text-3xl font-bold text-primary">
                     {crewMembers.length}
                   </p>
-                  <p className="text-sm font-medium text-blue-700">Total Crew</p>
+                  <p className="text-sm font-medium text-blue-700">
+                    Total Crew
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -674,7 +706,9 @@ export default function Index() {
                           placeholder="Enter crew member name"
                           value={newMemberName}
                           onChange={(e) => setNewMemberName(e.target.value)}
-                          onKeyPress={(e) => e.key === "Enter" && addCrewMember()}
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && addCrewMember()
+                          }
                         />
                         <Button onClick={addCrewMember} className="w-full">
                           Add Member
@@ -688,7 +722,8 @@ export default function Index() {
             <CardContent className="space-y-4">
               {crewMembers
                 .filter(
-                  (member) => userRole === "lead" || member.name === currentUser,
+                  (member) =>
+                    userRole === "lead" || member.name === currentUser,
                 )
                 .sort((a, b) => {
                   // Sort by first name (the part after "OT ")
@@ -706,7 +741,8 @@ export default function Index() {
                         <User className="w-5 h-5 text-gray-500" />
                       </div>
                       <div className="space-y-1">
-                        {userRole === "lead" && editingMemberId === member.id ? (
+                        {userRole === "lead" &&
+                        editingMemberId === member.id ? (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium">OT</span>
                             <Input
@@ -759,7 +795,9 @@ export default function Index() {
                     <div className="flex items-center space-x-4">
                       {getStatusBadge(member.status)}
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">Out</span>
+                        <span className="text-sm text-muted-foreground">
+                          Out
+                        </span>
                         <Switch
                           checked={member.status === "in"}
                           onCheckedChange={(checked) =>
@@ -767,7 +805,9 @@ export default function Index() {
                           }
                           className="data-[state=checked]:bg-success data-[state=unchecked]:bg-destructive"
                         />
-                        <span className="text-sm text-muted-foreground">In</span>
+                        <span className="text-sm text-muted-foreground">
+                          In
+                        </span>
                       </div>
                       {userRole === "lead" && (
                         <Button
