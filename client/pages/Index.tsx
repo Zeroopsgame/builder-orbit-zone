@@ -379,11 +379,10 @@ export default function Index() {
           <CardHeader>
             <div className="flex flex-col items-center space-y-3">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F3ddd57bd6dc845d9b67a66c8baf54949?format=webp&width=800"
-                alt="U.S. Air Force"
-                className="h-16 w-auto"
+                src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fbc0dd3e287d54cf1a39ad26ac5945b16?format=webp&width=800"
+                alt="U.S. Air Force OTS Flight 15"
+                className="h-24 w-auto"
               />
-              <CardTitle className="text-center">Access Crew Status</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -520,14 +519,11 @@ export default function Index() {
         <div className="text-center space-y-4">
           <div className="flex flex-col items-center space-y-3">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F3ddd57bd6dc845d9b67a66c8baf54949?format=webp&width=800"
-              alt="U.S. Air Force"
-              className="h-20 w-auto"
+              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2Fbc0dd3e287d54cf1a39ad26ac5945b16?format=webp&width=800"
+              alt="U.S. Air Force OTS Flight 15"
+              className="h-24 w-auto"
             />
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-                Crew Status
-              </h1>
               <p className="text-muted-foreground">
                 Real-time crew location tracking
               </p>
