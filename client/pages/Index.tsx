@@ -207,15 +207,24 @@ export default function Index() {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-4">
                   {getStatusBadge(member.status)}
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-muted-foreground">Out</span>
+                    <Switch
+                      checked={member.status === 'in'}
+                      onCheckedChange={(checked) => toggleStatus(member.id, checked)}
+                      className="data-[state=checked]:bg-success data-[state=unchecked]:bg-destructive"
+                    />
+                    <span className="text-sm text-muted-foreground">In</span>
+                  </div>
                   <Button
-                    variant={member.status === 'in' ? 'destructive' : 'default'}
+                    variant="ghost"
                     size="sm"
-                    onClick={() => toggleStatus(member.id, member.status === 'in' ? 'out' : 'in')}
-                    className={member.status === 'out' ? 'bg-success hover:bg-success/90 text-success-foreground' : ''}
+                    onClick={() => removeMember(member.id)}
+                    className="text-muted-foreground hover:text-destructive"
                   >
-                    {member.status === 'in' ? 'Mark Out' : 'Mark In'}
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
