@@ -1,0 +1,18 @@
+RewriteEngine On
+RewriteBase /roster/
+
+# Handle client-side routing
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /roster/index.html [L]
+
+# Security headers
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+
+# Cache static assets
+<filesMatch "\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2)$">
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+</filesMatch>
