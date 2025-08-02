@@ -675,7 +675,7 @@ export default function Index() {
               .map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between p-6 border rounded-xl shadow-sm hover:shadow-md transition-shadow bg-white"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="space-y-1">
