@@ -124,6 +124,21 @@ export default function Index() {
 
   const addCrewMember = async () => {
     if (newMemberName.trim()) {
+      // In development mode, use local state directly
+      if (isDevelopment) {
+        const newMember: CrewMember = {
+          id: Date.now().toString(),
+          name: newMemberName.trim(),
+          status: "in",
+          timestamp: new Date(),
+        };
+        setCrewMembers([...crewMembers, newMember]);
+        setNewMemberName("");
+        setShowAddDialog(false);
+        return;
+      }
+
+      // In production mode, try API first
       try {
         const response = await fetch(`${API_BASE_URL}/crew.php`, {
           method: 'POST',
