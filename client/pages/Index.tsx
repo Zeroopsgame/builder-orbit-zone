@@ -29,12 +29,13 @@ interface CrewMember {
 
 export default function Index() {
   // UPDATE THIS URL TO MATCH YOUR CPANEL DOMAIN
-  const API_BASE_URL = 'https://nerkco.com/roster/api';
+  const API_BASE_URL = "https://nerkco.com/roster/api";
 
   // Detect if we're in development mode
-  const isDevelopment = window.location.hostname === 'localhost' ||
-                       window.location.hostname.includes('fly.dev') ||
-                       window.location.hostname.includes('builder.codes');
+  const isDevelopment =
+    window.location.hostname === "localhost" ||
+    window.location.hostname.includes("fly.dev") ||
+    window.location.hostname.includes("builder.codes");
 
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ export default function Index() {
   const fetchCrewMembers = async () => {
     // In development mode, use sample data directly
     if (isDevelopment) {
-      console.log('Development mode detected - using sample data');
+      console.log("Development mode detected - using sample data");
       setCrewMembers([
         {
           id: "1",
@@ -91,14 +92,17 @@ export default function Index() {
         const data = await response.json();
         const formattedData = data.map((member: any) => ({
           ...member,
-          timestamp: new Date(member.timestamp)
+          timestamp: new Date(member.timestamp),
         }));
         setCrewMembers(formattedData);
       } else {
-        throw new Error('API not available');
+        throw new Error("API not available");
       }
     } catch (error) {
-      console.error('Failed to fetch crew members, using fallback data:', error);
+      console.error(
+        "Failed to fetch crew members, using fallback data:",
+        error,
+      );
       // Use fallback data when API is not available
       setCrewMembers([
         {
@@ -145,9 +149,9 @@ export default function Index() {
       // In production mode, try API first
       try {
         const response = await fetch(`${API_BASE_URL}/crew.php`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ name: newMemberName.trim() }),
         });
@@ -159,10 +163,10 @@ export default function Index() {
           setNewMemberName("");
           setShowAddDialog(false);
         } else {
-          throw new Error('API not available');
+          throw new Error("API not available");
         }
       } catch (error) {
-        console.log('Development mode: using local state (API not available)');
+        console.log("Development mode: using local state (API not available)");
         // Fallback to local state when API is not available
         const newMember: CrewMember = {
           id: Date.now().toString(),
@@ -190,20 +194,22 @@ export default function Index() {
     // In production mode, try API first
     try {
       const response = await fetch(`${API_BASE_URL}/crew.php`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ id }),
       });
 
       if (response.ok) {
-        setCrewMembers((members) => members.filter((member) => member.id !== id));
+        setCrewMembers((members) =>
+          members.filter((member) => member.id !== id),
+        );
       } else {
-        throw new Error('API not available');
+        throw new Error("API not available");
       }
     } catch (error) {
-      console.log('Development mode: using local state (API not available)');
+      console.log("Development mode: using local state (API not available)");
       // Fallback to local state
       setCrewMembers((members) => members.filter((member) => member.id !== id));
     }
@@ -225,9 +231,9 @@ export default function Index() {
 
     try {
       const response = await fetch(`${API_BASE_URL}/crew.php`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ id, status: newStatus }),
       });
@@ -246,10 +252,10 @@ export default function Index() {
           ),
         );
       } else {
-        throw new Error('API not available');
+        throw new Error("API not available");
       }
     } catch (error) {
-      console.log('Development mode: using local state (API not available)');
+      console.log("Development mode: using local state (API not available)");
       // Fallback to local state
       setCrewMembers((members) =>
         members.map((member) =>
@@ -270,14 +276,14 @@ export default function Index() {
     if (noteDialogMember) {
       try {
         const response = await fetch(`${API_BASE_URL}/crew.php`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             id: noteDialogMember,
             status: "out",
-            note: noteText
+            note: noteText,
           }),
         });
 
@@ -297,10 +303,10 @@ export default function Index() {
           setNoteDialogMember(null);
           setNoteText("");
         } else {
-          throw new Error('API not available');
+          throw new Error("API not available");
         }
       } catch (error) {
-        console.log('Development mode: using local state (API not available)');
+        console.log("Development mode: using local state (API not available)");
         // Fallback to local state
         setCrewMembers((members) =>
           members.map((member) =>
@@ -326,7 +332,9 @@ export default function Index() {
 
   const getTimeSince = (date: Date) => {
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60),
+    );
 
     if (diffInMinutes < 1) return "just now";
     if (diffInMinutes < 60) return `${diffInMinutes}m`;
@@ -362,8 +370,8 @@ export default function Index() {
     if (isDevelopment) {
       setCrewMembers((members) =>
         members.map((member) =>
-          member.id === id ? { ...member, name: newName.trim() } : member
-        )
+          member.id === id ? { ...member, name: newName.trim() } : member,
+        ),
       );
       setEditingMemberId(null);
       setEditNameInput("");
@@ -373,9 +381,9 @@ export default function Index() {
     // In production mode, would use API call
     try {
       const response = await fetch(`${API_BASE_URL}/crew.php`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ id, name: newName.trim() }),
       });
@@ -383,21 +391,21 @@ export default function Index() {
       if (response.ok) {
         setCrewMembers((members) =>
           members.map((member) =>
-            member.id === id ? { ...member, name: newName.trim() } : member
-          )
+            member.id === id ? { ...member, name: newName.trim() } : member,
+          ),
         );
         setEditingMemberId(null);
         setEditNameInput("");
       } else {
-        throw new Error('API not available');
+        throw new Error("API not available");
       }
     } catch (error) {
-      console.log('Development mode: using local state (API not available)');
+      console.log("Development mode: using local state (API not available)");
       // Fallback to local state
       setCrewMembers((members) =>
         members.map((member) =>
-          member.id === id ? { ...member, name: newName.trim() } : member
-        )
+          member.id === id ? { ...member, name: newName.trim() } : member,
+        ),
       );
       setEditingMemberId(null);
       setEditNameInput("");
@@ -685,7 +693,9 @@ export default function Index() {
                                 setEditNameInput("");
                               }
                             }}
-                            onBlur={() => updateMemberName(member.id, editNameInput)}
+                            onBlur={() =>
+                              updateMemberName(member.id, editNameInput)
+                            }
                             className="font-medium h-6 w-32"
                             autoFocus
                           />
@@ -694,20 +704,25 @@ export default function Index() {
                         <div className="flex items-center space-x-3">
                           <p
                             className={`font-medium ${userRole === "lead" ? "cursor-pointer hover:text-primary" : ""}`}
-                            onClick={() => userRole === "lead" && startEditingName(member)}
-                            title={userRole === "lead" ? "Click to edit name" : ""}
+                            onClick={() =>
+                              userRole === "lead" && startEditingName(member)
+                            }
+                            title={
+                              userRole === "lead" ? "Click to edit name" : ""
+                            }
                           >
                             OT {member.name}
                           </p>
-                          <div className={`text-xs font-medium px-2 py-1 rounded-full ${
-                            member.status === 'out'
-                              ? 'text-red-600 bg-red-50'
-                              : 'text-green-600 bg-green-50'
-                          }`}>
-                            {member.status === 'out'
-                              ? `out since ${getTimeSince(member.timestamp)} ${member.note ? `• ${member.note}` : ''}`
-                              : 'present'
-                            }
+                          <div
+                            className={`text-xs font-medium px-2 py-1 rounded-full ${
+                              member.status === "out"
+                                ? "text-red-600 bg-red-50"
+                                : "text-green-600 bg-green-50"
+                            }`}
+                          >
+                            {member.status === "out"
+                              ? `out since ${getTimeSince(member.timestamp)} ${member.note ? `• ${member.note}` : ""}`
+                              : "present"}
                           </div>
                         </div>
                       )}
@@ -789,8 +804,6 @@ export default function Index() {
             </div>
           </DialogContent>
         </Dialog>
-
-
       </div>
     </div>
   );
