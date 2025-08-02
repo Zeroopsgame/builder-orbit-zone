@@ -28,7 +28,7 @@ export default function Index() {
       id: '2',
       name: 'Sarah Johnson',
       status: 'out',
-      note: 'Pre-flight inspection',
+      note: 'Lunch',
       timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 min ago
     },
     {
@@ -39,6 +39,8 @@ export default function Index() {
     },
   ]);
 
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<'crew' | 'lead' | null>(null);
   const [newMemberName, setNewMemberName] = useState('');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [noteDialogMember, setNoteDialogMember] = useState<string | null>(null);
