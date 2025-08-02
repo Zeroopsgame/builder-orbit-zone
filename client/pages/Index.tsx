@@ -61,6 +61,8 @@ export default function Index() {
   };
 
   const removeMember = (id: string) => {
+    // Only flight leads can remove members
+    if (userRole !== 'lead') return;
     setCrewMembers(members => members.filter(member => member.id !== id));
   };
 
