@@ -392,9 +392,9 @@ export default function Index() {
           <div className="w-full max-w-md space-y-6 md:space-y-8">
             {/* Header */}
             <div className="text-center">
-              <h2 className="text-3xl font-medium text-gray-600 mb-2">OTS FLIGHT 15</h2>
-              <h3 className="text-xl font-medium text-gray-500 mb-8">STATUS LIVE TRACKER</h3>
-              <p className="text-sm text-gray-500 mb-8">Select your access level to begin</p>
+              <h2 className="text-2xl md:text-3xl font-medium text-gray-600 mb-2">OTS FLIGHT 15</h2>
+              <h3 className="text-lg md:text-xl font-medium text-gray-500 mb-6 md:mb-8">STATUS LIVE TRACKER</h3>
+              <p className="text-sm text-gray-500 mb-6 md:mb-8">Select your access level to begin</p>
             </div>
 
             {/* Status Overview */}
