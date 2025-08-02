@@ -469,10 +469,12 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Copyright Footer */}
-        <div className="bg-gray-50 py-4 px-4 text-center">
-          <p className="text-xs text-gray-500">Copyright 2025 OT Moser</p>
-        </div>
+        {/* Copyright Footer - Fixed at bottom, full width */}
+        <footer className="w-full bg-gray-100 border-t border-gray-200 py-4 mt-auto">
+          <div className="text-center">
+            <p className="text-xs text-gray-500">Copyright 2025 OT Moser</p>
+          </div>
+        </footer>
         </div>
 
         {/* Password Dialog - Available on login screen */}
