@@ -383,9 +383,6 @@ export default function Index() {
               >
                 Flight Lead Access
               </Button>
-              <p className="text-xs text-muted-foreground text-center">
-                Full dashboard access
-              </p>
             </div>
 
             <div className="space-y-2">
