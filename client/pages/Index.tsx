@@ -594,39 +594,39 @@ export default function Index() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4 flex items-center space-x-3">
-              <Users className="h-8 w-8 text-primary" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100">
+            <CardContent className="p-6 flex items-center space-x-4">
+              <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center">
+                <Users className="h-6 w-6 text-primary-foreground" />
+              </div>
               <div>
-                <p className="text-2xl font-bold">{crewMembers.length}</p>
-                <p className="text-sm text-muted-foreground">Total Crew</p>
+                <p className="text-3xl font-bold text-primary">{crewMembers.length}</p>
+                <p className="text-sm font-medium text-blue-700">Total Crew</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="h-8 w-8 bg-success rounded-full flex items-center justify-center">
-                <Users className="h-4 w-4 text-success-foreground" />
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100">
+            <CardContent className="p-6 flex items-center space-x-4">
+              <div className="h-12 w-12 bg-green-500 rounded-xl flex items-center justify-center">
+                <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-success">{inCount}</p>
-                <p className="text-sm text-muted-foreground">Present</p>
+                <p className="text-3xl font-bold text-green-600">{inCount}</p>
+                <p className="text-sm font-medium text-green-700">Present</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-4 flex items-center space-x-3">
-              <div className="h-8 w-8 bg-destructive rounded-full flex items-center justify-center">
-                <MapPin className="h-4 w-4 text-destructive-foreground" />
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-red-100">
+            <CardContent className="p-6 flex items-center space-x-4">
+              <div className="h-12 w-12 bg-red-500 rounded-xl flex items-center justify-center">
+                <MapPin className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-destructive">
-                  {outCount}
-                </p>
-                <p className="text-sm text-muted-foreground">Away</p>
+                <p className="text-3xl font-bold text-red-600">{outCount}</p>
+                <p className="text-sm font-medium text-red-700">Away</p>
               </div>
             </CardContent>
           </Card>
