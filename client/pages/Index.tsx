@@ -444,6 +444,25 @@ export default function Index() {
 
   // Show login screen if no user selected (unless flight lead)
   if ((!currentUser && userRole !== "lead") || !userRole) {
+    const presentCount = crewMembers.filter(member => member.status === "in").length;
+    const totalCount = crewMembers.length;
+    const presentPercentage = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 0;
+
+    const getStatusMessage = () => {
+      if (presentPercentage === 100) return "✨ Kawaii! All present! ✨";
+      if (presentPercentage >= 80) return "🌟 Almost everyone's here!";
+      if (presentPercentage >= 60) return "👥 Most crew present";
+      if (presentPercentage >= 40) return "⚠️ Some crew away";
+      return "🚨 Many crew members out";
+    };
+
+    const getStatusColor = () => {
+      if (presentPercentage === 100) return "from-green-400 to-green-600";
+      if (presentPercentage >= 80) return "from-green-300 to-green-500";
+      if (presentPercentage >= 60) return "from-yellow-300 to-yellow-500";
+      if (presentPercentage >= 40) return "from-orange-300 to-orange-500";
+      return "from-red-300 to-red-500";
+    };
     return (
       <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
         <Card className="w-full max-w-md">
