@@ -38,6 +38,16 @@ export default function Index() {
     window.location.hostname.includes("fly.dev") ||
     window.location.hostname.includes("builder.codes");
 
+  // Initialize Netlify Blobs storage for multi-user persistence
+  const getCrewStore = () => {
+    try {
+      return getStore("crew-status");
+    } catch (error) {
+      console.log("Netlify Blobs not available, using local storage fallback");
+      return null;
+    }
+  };
+
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [loading, setLoading] = useState(true);
 
