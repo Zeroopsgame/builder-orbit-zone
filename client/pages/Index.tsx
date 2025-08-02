@@ -67,6 +67,19 @@ export default function Index() {
     fetchCrewMembers();
   }, []);
 
+  // Helper function to save crew data to Netlify Blobs
+  const saveCrewMembers = async (members: CrewMember[]) => {
+    try {
+      const store = getCrewStore();
+      if (store) {
+        await store.setJSON("crew-members", members);
+        console.log("Crew data saved to Netlify Blobs");
+      }
+    } catch (error) {
+      console.log("Could not save to Netlify Blobs:", error);
+    }
+  };
+
   const fetchCrewMembers = async () => {
     try {
       const store = getCrewStore();
@@ -450,7 +463,7 @@ export default function Index() {
       if (presentPercentage === 100) return "✨ Kawaii! All present! ✨";
       if (presentPercentage >= 80) return "🌟 Almost everyone's here!";
       if (presentPercentage >= 60) return "👥 Most crew present";
-      if (presentPercentage >= 40) return "⚠️ Some crew away";
+      if (presentPercentage >= 40) return "⚠��� Some crew away";
       return "🚨 Many crew members out";
     };
 
