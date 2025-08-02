@@ -140,52 +140,21 @@ export default function Index() {
 
   const addCrewMember = async () => {
     if (newMemberName.trim()) {
-      // In development mode, use local state directly
-      if (isDevelopment) {
-        const newMember: CrewMember = {
-          id: Date.now().toString(),
-          name: newMemberName.trim(),
-          status: "in",
-          timestamp: new Date(),
-        };
-        setCrewMembers([...crewMembers, newMember]);
-        setNewMemberName("");
-        setShowAddDialog(false);
-        return;
-      }
+      const newMember: CrewMember = {
+        id: Date.now().toString(),
+        name: newMemberName.trim(),
+        status: "in",
+        timestamp: new Date(),
+      };
 
-      // In production mode, try API first
-      try {
-        const response = await fetch(`${API_BASE_URL}/crew.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: newMemberName.trim() }),
-        });
+      const updatedMembers = [...crewMembers, newMember];
+      setCrewMembers(updatedMembers);
 
-        if (response.ok) {
-          const newMember = await response.json();
-          newMember.timestamp = new Date(newMember.timestamp);
-          setCrewMembers([...crewMembers, newMember]);
-          setNewMemberName("");
-          setShowAddDialog(false);
-        } else {
-          throw new Error("API not available");
-        }
-      } catch (error) {
-        console.log("Development mode: using local state (API not available)");
-        // Fallback to local state when API is not available
-        const newMember: CrewMember = {
-          id: Date.now().toString(),
-          name: newMemberName.trim(),
-          status: "in",
-          timestamp: new Date(),
-        };
-        setCrewMembers([...crewMembers, newMember]);
-        setNewMemberName("");
-        setShowAddDialog(false);
-      }
+      // Save to Netlify Blobs for multi-user persistence
+      await saveCrewMembers(updatedMembers);
+
+      setNewMemberName("");
+      setShowAddDialog(false);
     }
   };
 
@@ -463,7 +432,7 @@ export default function Index() {
       if (presentPercentage === 100) return "✨ Kawaii! All present! ✨";
       if (presentPercentage >= 80) return "🌟 Almost everyone's here!";
       if (presentPercentage >= 60) return "👥 Most crew present";
-      if (presentPercentage >= 40) return "⚠��� Some crew away";
+      if (presentPercentage >= 40) return "⚠️ Some crew away";
       return "🚨 Many crew members out";
     };
 
