@@ -210,47 +210,21 @@ export default function Index() {
       return;
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/crew.php`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status: newStatus }),
-      });
+    const updatedMembers = crewMembers.map((member) =>
+      member.id === id
+        ? {
+            ...member,
+            status: newStatus,
+            note: undefined,
+            timestamp: new Date(),
+          }
+        : member,
+    );
 
-      if (response.ok) {
-        setCrewMembers((members) =>
-          members.map((member) =>
-            member.id === id
-              ? {
-                  ...member,
-                  status: newStatus,
-                  note: undefined,
-                  timestamp: new Date(),
-                }
-              : member,
-          ),
-        );
-      } else {
-        throw new Error("API not available");
-      }
-    } catch (error) {
-      console.log("Development mode: using local state (API not available)");
-      // Fallback to local state
-      setCrewMembers((members) =>
-        members.map((member) =>
-          member.id === id
-            ? {
-                ...member,
-                status: newStatus,
-                note: undefined,
-                timestamp: new Date(),
-              }
-            : member,
-        ),
-      );
-    }
+    setCrewMembers(updatedMembers);
+
+    // Save to Netlify Blobs for multi-user persistence
+    await saveCrewMembers(updatedMembers);
   };
 
   const confirmStatusWithNote = async () => {
