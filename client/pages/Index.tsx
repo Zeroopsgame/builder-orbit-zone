@@ -374,7 +374,7 @@ export default function Index() {
       return "from-red-300 to-red-500";
     };
     return (
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="h-screen bg-white flex flex-col">
         {/* Top Section - Air Force Branding */}
         <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-8 md:py-12">
           <div className="absolute inset-0 bg-black opacity-40"></div>
