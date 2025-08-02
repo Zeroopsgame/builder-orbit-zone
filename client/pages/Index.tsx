@@ -66,15 +66,25 @@ export default function Index() {
 
   const addCrewMember = async () => {
     if (newMemberName.trim()) {
-      const newMember: CrewMember = {
-        id: Date.now().toString(),
-        name: newMemberName.trim(),
-        status: "in",
-        timestamp: new Date(),
-      };
-      setCrewMembers([...crewMembers, newMember]);
-      setNewMemberName("");
-      setShowAddDialog(false);
+      try {
+        const response = await fetch(`${API_BASE_URL}/crew.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: newMemberName.trim() }),
+        });
+
+        if (response.ok) {
+          const newMember = await response.json();
+          newMember.timestamp = new Date(newMember.timestamp);
+          setCrewMembers([...crewMembers, newMember]);
+          setNewMemberName("");
+          setShowAddDialog(false);
+        }
+      } catch (error) {
+        console.error('Failed to add crew member:', error);
+      }
     }
   };
 
