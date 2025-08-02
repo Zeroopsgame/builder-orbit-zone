@@ -28,9 +28,9 @@ interface CrewMember {
 
 export default function Index() {
   // Environment detection
-  const isNetlify = typeof window !== 'undefined' &&
+  const isNetlify = typeof window !== 'undefined' && 
     (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('netlify.com'));
-
+  
   // API functions with environment detection
   const fetchCrewMembers = async (): Promise<CrewMember[]> => {
     if (isNetlify) {
@@ -42,11 +42,11 @@ export default function Index() {
             'Content-Type': 'application/json',
           },
         });
-
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+        
         const data = await response.json();
         console.log("✅ Successfully fetched crew data:", data);
         return Array.isArray(data) ? data : [];
@@ -79,11 +79,11 @@ export default function Index() {
           },
           body: JSON.stringify({ crewMembers: members }),
         });
-
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+        
         const result = await response.json();
         console.log("✅ Successfully saved crew data:", result);
         return result.success === true;
@@ -303,10 +303,10 @@ export default function Index() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading crew status...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+          <p className="text-white font-medium">Loading crew status...</p>
         </div>
       </div>
     );
@@ -315,192 +315,239 @@ export default function Index() {
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center pb-2">
-            <div className="flex flex-col items-center space-y-4">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F962aeba48dbd4536b2fe3a0a4e31965f?format=webp&width=800"
-                alt="Air Force Logo"
-                className="w-32 h-32 object-contain"
-              />
-              <div>
-                <h1 className="text-3xl font-bold text-blue-700 mb-2">
-                  OTS FLIGHT 15
-                </h1>
-                <p className="text-lg text-blue-600 font-semibold">
-                  STATUS TRACKER
-                </p>
+        <div className="w-full max-w-2xl">
+          <div className="bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8">
+            
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="flex flex-col items-center space-y-6">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl"></div>
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F962aeba48dbd4536b2fe3a0a4e31965f?format=webp&width=800"
+                    alt="Air Force Logo"
+                    className="relative w-24 h-24 object-contain"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold text-white mb-2">
+                    OTS FLIGHT 15
+                  </h1>
+                  <p className="text-blue-200 font-medium text-lg">
+                    STATUS TRACKER
+                  </p>
+                </div>
               </div>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="text-center space-y-2">
-              <div className="bg-gradient-to-r from-blue-500/10 via-blue-600/10 to-blue-700/10 rounded-xl p-6 border border-blue-200/50 shadow-lg">
+            
+            {/* Status Summary */}
+            <div className="mb-8">
+              <div className="bg-black/20 backdrop-blur-sm rounded-xl p-6 border border-white/10">
                 <div className="grid grid-cols-3 gap-6 text-center">
                   <div className="space-y-2">
-                    <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <div className="w-6 h-6 bg-green-500 rounded-full"></div>
+                    <div className="w-14 h-14 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <div className="w-7 h-7 bg-green-400 rounded-full"></div>
                     </div>
-                    <p className="text-3xl font-bold text-green-600">
+                    <p className="text-4xl font-bold text-green-400">
                       {crewMembers.filter((m) => m.isIn).length}
                     </p>
-                    <p className="text-sm font-semibold text-green-700">IN</p>
+                    <p className="text-green-200 font-medium">IN</p>
                   </div>
                   <div className="space-y-2">
-                    <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <div className="w-6 h-6 bg-red-500 rounded-full"></div>
+                    <div className="w-14 h-14 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <div className="w-7 h-7 bg-red-400 rounded-full"></div>
                     </div>
-                    <p className="text-3xl font-bold text-red-600">
+                    <p className="text-4xl font-bold text-red-400">
                       {crewMembers.filter((m) => !m.isIn).length}
                     </p>
-                    <p className="text-sm font-semibold text-red-700">OUT</p>
+                    <p className="text-red-200 font-medium">OUT</p>
                   </div>
                   <div className="space-y-2">
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
+                    <div className="w-14 h-14 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <div className="w-7 h-7 bg-blue-400 rounded-full"></div>
                     </div>
-                    <p className="text-3xl font-bold text-blue-600">
+                    <p className="text-4xl font-bold text-blue-400">
                       {crewMembers.length}
                     </p>
-                    <p className="text-sm font-semibold text-blue-700">TOTAL</p>
+                    <p className="text-blue-200 font-medium">TOTAL</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Label htmlFor="user-select">Select Your Name:</Label>
-              <select
-                id="user-select"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                onChange={(e) => {
-                  setCurrentUser(e.target.value);
-                  setUserRole("crew");
-                }}
-                value=""
-              >
-                <option value="">Choose your name...</option>
+            {/* Crew Status List */}
+            <div className="space-y-6">
+              <h3 className="text-white font-semibold text-xl text-center">Select Your Name</h3>
+              <div className="max-h-80 overflow-y-auto space-y-3 pr-2">
                 {crewMembers.map((member) => (
-                  <option key={member.id} value={member.name}>
-                    {member.name}
-                  </option>
-                ))}
-              </select>
-
-              <Dialog
-                open={showPasswordDialog}
-                onOpenChange={setShowPasswordDialog}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full flex items-center justify-center gap-2"
+                  <div 
+                    key={member.id}
+                    className="bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 hover:border-white/20 transition-all cursor-pointer group"
+                    onClick={() => {
+                      setCurrentUser(member.name);
+                      setUserRole("crew");
+                    }}
                   >
-                    <Settings className="h-4 w-4" />
-                    Flight Lead Access
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Flight Lead Access</DialogTitle>
-                    <DialogDescription>
-                      Enter the flight lead password to manage crew members.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="password">Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onKeyPress={(e) =>
-                          e.key === "Enter" && handlePasswordSubmit()
-                        }
-                      />
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className={`w-4 h-4 rounded-full ${member.isIn ? 'bg-green-400' : 'bg-red-400'} shadow-lg`}></div>
+                        <span className="text-white font-medium text-lg">{member.name}</span>
+                      </div>
+                      <div className="text-right">
+                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          member.isIn 
+                            ? 'bg-green-400/20 text-green-300 border border-green-400/30' 
+                            : 'bg-red-400/20 text-red-300 border border-red-400/30'
+                        }`}>
+                          {member.isIn ? 'IN' : 'OUT'}
+                        </div>
+                        <div className="text-gray-400 text-sm mt-1">
+                          {formatTime(member.lastUpdate)}
+                        </div>
+                        {!member.isIn && member.location && (
+                          <div className="text-gray-400 text-sm">
+                            📍 {member.location}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <DialogFooter>
-                    <Button onClick={handlePasswordSubmit}>Access</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                ))}
+              </div>
+              
+              {/* Flight Lead Access */}
+              <div className="pt-6 border-t border-white/20">
+                <Dialog
+                  open={showPasswordDialog}
+                  onOpenChange={setShowPasswordDialog}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-none shadow-lg text-lg py-6"
+                    >
+                      <Settings className="h-6 w-6 mr-3" />
+                      Flight Lead Access
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-slate-800 border-gray-600">
+                    <DialogHeader>
+                      <DialogTitle className="text-white">Flight Lead Access</DialogTitle>
+                      <DialogDescription className="text-gray-300">
+                        Enter the flight lead password to manage crew members.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="password" className="text-white">Password</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && handlePasswordSubmit()
+                          }
+                          className="bg-slate-700 border-gray-600 text-white"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handlePasswordSubmit} className="bg-blue-600 hover:bg-blue-700">
+                        Access
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-slate-100">
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <div className="text-center mb-6">
-          <div className="flex flex-col items-center space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex flex-col items-center space-y-6">
             <img
-              src="https://builder.io/api/v1/image/assets%2F79cc5a94c2b54dff8b956b850b45e84f%2Facc6ea8dacea44a4b45a09b33c5f36c3"
+              src="https://cdn.builder.io/api/v1/image/assets%2F1286fd005baa4e368e0e4e8dfaf9c2e8%2F962aeba48dbd4536b2fe3a0a4e31965f?format=webp&width=800"
               alt="Air Force Logo"
               className="w-20 h-20 object-contain"
             />
             <div>
-              <h1 className="text-3xl font-bold text-blue-700">
+              <h1 className="text-4xl font-bold text-white">
                 OTS FLIGHT 15
               </h1>
-              <p className="text-lg text-blue-600 font-semibold">STATUS TRACKER</p>
+              <p className="text-blue-200 font-medium text-lg">STATUS TRACKER</p>
             </div>
           </div>
         </div>
 
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl">OTS FLIGHT 15 - Status Dashboard</CardTitle>
+        <div className="grid gap-8">
+          <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-2xl">
+            <CardHeader className="pb-6">
               <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground">
-                  Logged in as: <span className="font-medium">{currentUser}</span> ({userRole})
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setCurrentUser(null);
-                    setUserRole(null);
-                  }}
-                >
-                  Switch User
-                </Button>
+                <CardTitle className="text-2xl text-white">Flight Dashboard</CardTitle>
+                <div className="flex items-center space-x-4">
+                  <span className="text-blue-200">
+                    Logged in as: <span className="font-medium text-white">{currentUser}</span> ({userRole})
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setCurrentUser(null);
+                      setUserRole(null);
+                    }}
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  >
+                    Switch User
+                  </Button>
+                </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="bg-blue-50 rounded-lg p-4 mb-6">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="text-2xl font-bold text-green-600">
+            <CardContent className="text-white">
+              {/* Status Summary */}
+              <div className="bg-black/20 backdrop-blur-sm rounded-xl p-6 mb-8 border border-white/10">
+                <div className="grid grid-cols-3 gap-6 text-center">
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <div className="w-6 h-6 bg-green-400 rounded-full"></div>
+                    </div>
+                    <p className="text-3xl font-bold text-green-400">
                       {crewMembers.filter((m) => m.isIn).length}
                     </p>
-                    <p className="text-sm font-medium text-green-700">In</p>
+                    <p className="text-green-200 font-medium">IN</p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-red-600">
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <div className="w-6 h-6 bg-red-400 rounded-full"></div>
+                    </div>
+                    <p className="text-3xl font-bold text-red-400">
                       {crewMembers.filter((m) => !m.isIn).length}
                     </p>
-                    <p className="text-sm font-medium text-red-700">Out</p>
+                    <p className="text-red-200 font-medium">OUT</p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-blue-600">
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <div className="w-6 h-6 bg-blue-400 rounded-full"></div>
+                    </div>
+                    <p className="text-3xl font-bold text-blue-400">
                       {crewMembers.length}
                     </p>
-                    <p className="text-sm font-medium text-blue-700">Total Crew</p>
+                    <p className="text-blue-200 font-medium">TOTAL</p>
                   </div>
                 </div>
               </div>
 
               {userRole === "lead" && (
-                <div className="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <h3 className="font-semibold text-yellow-800 mb-3">Flight Lead Controls</h3>
-                  <div className="flex gap-2">
+                <div className="mb-8 p-6 bg-yellow-500/10 rounded-xl border border-yellow-400/30">
+                  <h3 className="font-semibold text-yellow-300 mb-4 text-lg">Flight Lead Controls</h3>
+                  <div className="flex gap-3">
                     <Input
                       placeholder="Enter crew member name"
                       value={newMemberName}
@@ -508,8 +555,9 @@ export default function Index() {
                       onKeyPress={(e) =>
                         e.key === "Enter" && addCrewMember()
                       }
+                      className="bg-white/10 border-white/20 text-white placeholder-gray-300"
                     />
-                    <Button onClick={addCrewMember} className="flex items-center gap-2">
+                    <Button onClick={addCrewMember} className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2">
                       <UserPlus className="h-4 w-4" />
                       Add
                     </Button>
@@ -517,7 +565,7 @@ export default function Index() {
                 </div>
               )}
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {crewMembers
                   .filter(
                     (member) =>
@@ -526,9 +574,9 @@ export default function Index() {
                   .map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                      className="flex items-center justify-between p-6 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all"
                     >
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-4">
                         <div className="flex-1">
                           {userRole === "lead" &&
                           editingMemberId === member.id ? (
@@ -536,7 +584,7 @@ export default function Index() {
                               <Input
                                 value={editingName}
                                 onChange={(e) => setEditingName(e.target.value)}
-                                className="w-40"
+                                className="w-48 bg-white/10 border-white/20 text-white"
                                 onKeyPress={(e) => {
                                   if (e.key === "Enter") saveEditingName();
                                   if (e.key === "Escape") cancelEditingName();
@@ -546,6 +594,7 @@ export default function Index() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={saveEditingName}
+                                className="text-green-400 hover:text-green-300"
                               >
                                 <Check className="h-4 w-4" />
                               </Button>
@@ -553,13 +602,14 @@ export default function Index() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={cancelEditingName}
+                                className="text-red-400 hover:text-red-300"
                               >
                                 <X className="h-4 w-4" />
                               </Button>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold text-gray-900">
+                            <div className="flex items-center gap-3">
+                              <h3 className="font-semibold text-white text-lg">
                                 {member.name}
                               </h3>
                               {userRole === "lead" && (
@@ -567,16 +617,17 @@ export default function Index() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => startEditingName(member)}
+                                  className="text-gray-400 hover:text-white"
                                 >
                                   <Edit className="h-4 w-4" />
                                 </Button>
                               )}
                             </div>
                           )}
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-2 mt-2">
                             <Badge
                               variant={member.isIn ? "default" : "destructive"}
-                              className="text-xs"
+                              className="text-sm"
                             >
                               {getStatusDisplay(member)}
                             </Badge>
@@ -584,20 +635,16 @@ export default function Index() {
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-3">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-muted-foreground">
-                            Out
-                          </span>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-3">
+                          <span className="text-red-300 font-medium">OUT</span>
                           <Switch
                             checked={member.isIn}
                             onCheckedChange={() =>
                               handleStatusToggle(member.id, member.isIn)
                             }
                           />
-                          <span className="text-sm text-muted-foreground">
-                            In
-                          </span>
+                          <span className="text-green-300 font-medium">IN</span>
                         </div>
 
                         {userRole === "lead" && (
@@ -605,7 +652,7 @@ export default function Index() {
                             variant="ghost"
                             size="sm"
                             onClick={() => removeMember(member.id)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -618,32 +665,35 @@ export default function Index() {
           </Card>
         </div>
 
+        {/* Status Update Dialog */}
         <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
-          <DialogContent>
+          <DialogContent className="bg-slate-800 border-gray-600">
             <DialogHeader>
-              <DialogTitle>Going Out</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-white">Going Out</DialogTitle>
+              <DialogDescription className="text-gray-300">
                 Please provide your location and any additional notes.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="location">Location *</Label>
+                <Label htmlFor="location" className="text-white">Location *</Label>
                 <Input
                   id="location"
                   value={statusLocation}
                   onChange={(e) => setStatusLocation(e.target.value)}
                   placeholder="Where are you going?"
+                  className="bg-slate-700 border-gray-600 text-white"
                 />
               </div>
               <div>
-                <Label htmlFor="notes">Notes (optional)</Label>
+                <Label htmlFor="notes" className="text-white">Notes (optional)</Label>
                 <Textarea
                   id="notes"
                   value={statusNotes}
                   onChange={(e) => setStatusNotes(e.target.value)}
                   placeholder="Any additional information..."
                   rows={3}
+                  className="bg-slate-700 border-gray-600 text-white"
                 />
               </div>
             </div>
@@ -651,12 +701,14 @@ export default function Index() {
               <Button
                 variant="outline"
                 onClick={() => setShowStatusDialog(false)}
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleStatusDialogSubmit}
                 disabled={!statusLocation.trim()}
+                className="bg-blue-600 hover:bg-blue-700"
               >
                 Update Status
               </Button>
@@ -664,7 +716,8 @@ export default function Index() {
           </DialogContent>
         </Dialog>
 
-        <div className="text-center mt-8 text-xs text-gray-500">
+        {/* Footer */}
+        <div className="text-center mt-12 text-blue-200/60">
           Copyright 2025 OT Moser
         </div>
       </div>
