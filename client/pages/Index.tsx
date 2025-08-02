@@ -27,63 +27,93 @@ interface CrewMember {
 }
 
 export default function Index() {
-  // API functions for Netlify Function
+  // Environment detection
+  const isNetlify = typeof window !== 'undefined' &&
+    (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('netlify.com'));
+
+  // API functions with environment detection
   const fetchCrewMembers = async (): Promise<CrewMember[]> => {
-    try {
-      console.log("🔄 Fetching crew data from Netlify Function...");
-      const response = await fetch('/.netlify/functions/crew-data-simple', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log("✅ Successfully fetched crew data:", data);
-      return Array.isArray(data) ? data : [];
-    } catch (error) {
-      console.error("❌ Failed to fetch crew data:", error);
-      // Return sample data if fetch fails
-      return [
-        {
-          id: "1",
-          name: "OT Sample User",
-          isIn: true,
-          lastUpdate: new Date().toISOString(),
-          location: "",
-          notes: ""
+    if (isNetlify) {
+      try {
+        console.log("🔄 Fetching crew data from Netlify Function...");
+        const response = await fetch('/.netlify/functions/crew-data-simple', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      ];
+
+        const data = await response.json();
+        console.log("✅ Successfully fetched crew data:", data);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error("❌ Failed to fetch crew data:", error);
+        return getSampleData();
+      }
+    } else {
+      console.log("🔄 Local dev environment - using localStorage fallback");
+      const stored = localStorage.getItem('crew-members');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          return getSampleData();
+        }
+      }
+      return getSampleData();
     }
   };
 
   const saveCrewMembers = async (members: CrewMember[]): Promise<boolean> => {
-    try {
-      console.log("💾 Saving crew data to Netlify Function...", members);
-      const response = await fetch('/.netlify/functions/crew-data-simple', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ crewMembers: members }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    if (isNetlify) {
+      try {
+        console.log("💾 Saving crew data to Netlify Function...", members);
+        const response = await fetch('/.netlify/functions/crew-data-simple', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ crewMembers: members }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("✅ Successfully saved crew data:", result);
+        return result.success === true;
+      } catch (error) {
+        console.error("❌ Failed to save crew data:", error);
+        return false;
       }
-      
-      const result = await response.json();
-      console.log("✅ Successfully saved crew data:", result);
-      return result.success === true;
-    } catch (error) {
-      console.error("❌ Failed to save crew data:", error);
-      return false;
+    } else {
+      console.log("💾 Local dev environment - saving to localStorage");
+      try {
+        localStorage.setItem('crew-members', JSON.stringify(members));
+        console.log("✅ Successfully saved crew data to localStorage");
+        return true;
+      } catch (error) {
+        console.error("❌ Failed to save to localStorage:", error);
+        return false;
+      }
     }
   };
+
+  const getSampleData = (): CrewMember[] => [
+    {
+      id: "1",
+      name: "OT Sample User",
+      isIn: true,
+      lastUpdate: new Date().toISOString(),
+      location: "",
+      notes: ""
+    }
+  ];
 
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
   const [loading, setLoading] = useState(true);
