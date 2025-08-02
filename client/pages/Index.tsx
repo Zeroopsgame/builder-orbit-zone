@@ -376,14 +376,14 @@ export default function Index() {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         {/* Top Section - Air Force Branding */}
-        <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-12">
+        <div className="relative bg-gradient-to-br from-slate-900 to-slate-700 py-8 md:py-12">
           <div className="absolute inset-0 bg-black opacity-40"></div>
-          <div className="relative z-10 flex flex-col justify-center items-center text-white">
-            <svg className="w-20 h-20 mb-6 text-white" viewBox="0 0 100 100" fill="currentColor">
+          <div className="relative z-10 flex flex-col justify-center items-center text-white px-4">
+            <svg className="w-16 h-16 md:w-20 md:h-20 mb-4 md:mb-6 text-white" viewBox="0 0 100 100" fill="currentColor">
               <path d="M50 10 L30 30 L50 25 L70 30 Z M50 25 L30 30 L35 50 L50 45 Z M50 25 L70 30 L65 50 L50 45 Z M50 45 L35 50 L40 70 L50 65 Z M50 45 L65 50 L60 70 L50 65 Z M45 70 L50 65 L55 70 L50 80 Z M40 70 L45 70 L50 80 L45 85 Z M55 70 L60 70 L55 85 L50 80 Z"/>
             </svg>
-            <h1 className="text-4xl font-bold mb-2">WELCOME BACK</h1>
-            <p className="text-xl text-slate-300">U.S. AIR FORCE</p>
+            <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">WELCOME BACK</h1>
+            <p className="text-lg md:text-xl text-slate-300">U.S. AIR FORCE</p>
           </div>
         </div>
 
