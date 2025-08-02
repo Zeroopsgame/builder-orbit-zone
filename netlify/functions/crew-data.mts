@@ -84,6 +84,4 @@ export default async (req: Request, context: Context) => {
   }
 };
 
-export const config: Config = {
-  path: "/api/crew-data"
-};
+// Use default path: /.netlify/functions/crew-data
