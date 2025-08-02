@@ -118,6 +118,50 @@ export default function Index() {
   const inCount = crewMembers.filter(member => member.status === 'in').length;
   const outCount = crewMembers.filter(member => member.status === 'out').length;
 
+  // Show login screen if no user selected
+  if (!currentUser || !userRole) {
+    return (
+      <div className="min-h-screen bg-background p-4 md:p-6 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center">Access Crew Status</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Button
+                onClick={() => setUserRole('lead')}
+                className="w-full"
+                variant="default"
+              >
+                Flight Lead Access
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">Full dashboard access</p>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Select Your Name:</p>
+              <div className="space-y-2">
+                {crewMembers.map((member) => (
+                  <Button
+                    key={member.id}
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setCurrentUser(member.name);
+                      setUserRole('crew');
+                    }}
+                  >
+                    {member.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -125,6 +169,21 @@ export default function Index() {
         <div className="text-center space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">Crew Status</h1>
           <p className="text-muted-foreground">Real-time crew location tracking</p>
+          <div className="flex items-center justify-center space-x-4 text-sm">
+            <Badge variant="outline">
+              {userRole === 'lead' ? 'Flight Lead' : `Logged in as: ${currentUser}`}
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setCurrentUser(null);
+                setUserRole(null);
+              }}
+            >
+              Switch User
+            </Button>
+          </div>
         </div>
 
         {/* Summary Cards */}
